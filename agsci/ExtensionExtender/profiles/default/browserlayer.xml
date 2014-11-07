@@ -1,0 +1,4 @@
+<layers>
+    <layer name="agsci.ExtensionExtender"
+           interface="agsci.ExtensionExtender.interfaces.IExtensionExtenderLayer" />
+</layers>

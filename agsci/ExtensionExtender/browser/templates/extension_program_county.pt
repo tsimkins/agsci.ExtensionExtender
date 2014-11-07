@@ -1,0 +1,54 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en"
+      lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="plone">
+
+  <head><title></title></head>
+
+
+  <body>
+    <metal:fill fill-slot="content-core">
+      <metal:main_macro define-macro="content-core"
+            tal:define="portal_type python:here.getPortalTypeName().lower().replace(' ', '_');
+            base_macros context/base/macros;
+            standalone_view python:True;
+            view_template python:'%s_view' % portal_type;
+            view_macros python:path('context/%s/macros|nothing' % view_template);
+            errors python:request.get('errors', {});
+            toLocalizedTime nocall: context/@@plone/toLocalizedTime;
+            kssClassesView context/@@kss_field_decorator_view;
+            getKssClasses nocall:kssClassesView/getKssClassesInlineEditable;
+            templateId template/getId;
+            here_url view/here_url|nothing;
+            agenda_anchors context/agenda_anchors|nothing;
+            show_days view/show_days|nothing;
+            limit_display python:99999;
+            test nocall:view/test">
+
+        <tal:by_program 
+            define="programs view/by_program;"
+                    repeat="program python:sorted(programs.keys())">
+            <h2 tal:content="program" />
+                <tal:by_county 
+                    define="counties python:sorted(programs[program].keys());"
+                            repeat="county python:counties">
+                        <tal:block 
+                             define="people python:programs[program][county]"
+                             condition="people">
+                                <h3 tal:content="county" />
+                                <tal:people define="folderContents people">
+                                    <metal:block use-macro="context/@@folder_summary_view_z3/macros/listing" />
+                                </tal:people>
+                        </tal:block>
+        
+                </tal:by_county>
+        </tal:by_program>
+
+      </metal:main_macro>
+    </metal:fill>
+  </body>
+</html>

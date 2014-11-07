@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<portlets purge="False">
+
+    <portlet
+        addview="agsci.ExtensionExtender.similar"
+        title="Similar Items Portlet"
+    />
+
+    <portlet
+        addview="agsci.ExtensionExtender.drilldown"
+        title="Drilldown Portlet"
+    />
+      
+</portlets>

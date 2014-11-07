@@ -1,0 +1,38 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="plone">
+
+    <metal:content fill-slot="content-text">
+        <metal:block use-macro="context/@@folder_listing_z3/macros/text-field-view" />
+    </metal:content>
+
+    <metal:content-core fill-slot="content-core" 
+      tal:define="tags view/tags;
+                  test nocall:view/test;
+                  standalone_view python:True;
+                  is_a_topic python:context.portal_type=='Topic';
+                  contentFilter python:dict([(view.catalog_index , tags)]);
+                  folderContents view/getFolderContents|nothing;
+                  folderContents python:folderContents or is_a_topic and context.queryCatalog(batch=True, **contentFilter) or context.getFolderContents(contentFilter, batch=True, b_size=100);">
+        <tal:hastags tal:condition="tags">
+            <div class="discreet">
+            <p><strong>Filtered by <span tal:replace="python:view.plural_title.lower()" />:</strong></p>
+            <ul>
+                <li tal:repeat="t tags"
+                    tal:content="t" />
+            </ul>
+            <p><a tal:attributes="href view/original_context/absolute_url" tal:content="string:Unfilter..." /></p>
+            </div>
+
+            <metal:listing use-macro="context/@@tags/macros/listing" />
+
+        </tal:hastags>
+        <tal:notags tal:condition="not:tags">
+            <p>There are no results for this search.</p>
+        </tal:notags>
+    </metal:content-core>      
+
+</html>
+
+

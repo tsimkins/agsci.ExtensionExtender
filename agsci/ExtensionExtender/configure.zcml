@@ -1,0 +1,114 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+           xmlns:five="http://namespaces.zope.org/five"
+           i18n_domain="agsci.ExtensionExtender">
+
+    <include package="archetypes.schemaextender" />
+
+    <include package=".browser" />
+    <include package=".portlet" />
+    
+    <genericsetup:registerProfile
+        name="default"
+        title="ExtensionExtender"
+        directory="profiles/default"
+        description="Features that will only be used within the extension.psu.edu site"
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+    />
+
+   <genericsetup:registerProfile
+      name="uninstall"
+      title="ExtensionExtender Uninstall Profile"
+      directory="profiles/uninstall"
+      description="Removes ExtensionExtender."
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      />
+
+    <adapter
+        name="agsci.ExtensionExtender.extender.ExtensionExtender"
+        factory=".extender.ExtensionExtender"
+        provides="archetypes.schemaextender.interfaces.ISchemaExtender"
+    /> 
+
+    <adapter
+        name="agsci.ExtensionExtender.extender.FSDExtensionExtender"
+        factory=".extender.FSDExtensionExtender"
+        provides="archetypes.schemaextender.interfaces.ISchemaExtender"
+    /> 
+
+    <adapter
+        name="agsci.ExtensionExtender.extender.ExtensionContentPublicationExtender"
+        factory=".extender.ExtensionContentPublicationExtender"
+        provides="archetypes.schemaextender.interfaces.ISchemaExtender"
+    /> 
+
+    <adapter
+        name="agsci.ExtensionExtender.extender.ExtensionFilePublicationExtender"
+        factory=".extender.ExtensionFilePublicationExtender"
+        provides="archetypes.schemaextender.interfaces.ISchemaExtender"
+    /> 
+
+    <adapter
+        name="agsci.ExtensionExtender.extender.ExtensionContentPublicationExtender.fiddle"
+        factory=".extender.ExtensionContentPublicationExtender"
+        provides="archetypes.schemaextender.interfaces.ISchemaModifier"
+    /> 
+
+    <adapter
+        name="agsci.ExtensionExtender.extender.ExtensionFilePublicationExtender.fiddle"
+        factory=".extender.ExtensionFilePublicationExtender"
+        provides="archetypes.schemaextender.interfaces.ISchemaModifier"
+    /> 
+
+    <adapter
+        name="agsci.ExtensionExtender.extender.ExtensionCountiesExtender"
+        factory=".extender.ExtensionCountiesExtender"
+        provides="archetypes.schemaextender.interfaces.ISchemaExtender"
+    /> 
+
+    <adapter
+        name="agsci.ExtensionExtender.extender.ExtensionEventExtender"
+        factory=".extender.ExtensionEventExtender"
+        provides="archetypes.schemaextender.interfaces.ISchemaExtender"
+    /> 
+
+    <adapter
+        name="agsci.ExtensionExtender.extender.ExtensionEvent.fiddle"
+        factory=".extender.ExtensionEventExtender"
+        provides="archetypes.schemaextender.interfaces.ISchemaModifier"
+    /> 
+
+    <adapter
+        name="agsci.ExtensionExtender.extender.TranslationExtender"
+        factory=".extender.TranslationExtender"
+        provides="archetypes.schemaextender.interfaces.ISchemaExtender"
+    /> 
+
+    <adapter
+        name="agsci.ExtensionExtender.extender.CourseExtender"
+        factory=".extender.CourseExtender"
+        provides="archetypes.schemaextender.interfaces.ISchemaExtender"
+    /> 
+
+    <five:implements
+        class="Products.ATContentTypes.content.topic.ATTopic"
+        interface=".interfaces.IExtensionExtender"
+    /> 
+
+    <five:implements
+        class="Products.ATContentTypes.content.folder.ATFolder"
+        interface=".interfaces.IExtensionExtender"
+    /> 
+    
+    <five:implements
+        class="Products.ATContentTypes.content.newsitem.ATNewsItem"
+        interface=".interfaces.IExtensionExtender"
+    /> 
+    
+    <interface
+        interface=".interfaces.IExtensionPublicationExtender"
+        />
+
+</configure>
+

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<tool-setup>
+ <required tool_id="extension_course_tool"
+           class="agsci.ExtensionExtender.tools.course.ExtensionCourseTool"/>
+ <required tool_id="extension_zipcode_tool"
+           class="agsci.ExtensionExtender.tools.zip.ExtensionZIPCodeTool"/>
+</tool-setup>

@@ -1,0 +1,201 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:five="http://namespaces.zope.org/five"
+    i18n_domain="agcommon">
+
+    <!-- "agCommon" Zope 3 skin layer.
+         Register views, viewlets and resources for this layer to make sure
+         they only apply to the 'agCommon' theme.
+         You can also use this layer to override default Plone browser views
+         and viewlets only within the 'agCommon' theme.
+      -->
+    <interface
+        interface="Products.agCommon.browser.interfaces.IThemeSpecific"
+        type="zope.publisher.interfaces.browser.IBrowserSkinType"
+        name="agCommon"
+        />
+
+    <include package="plone.app.contentmenu"/>
+
+    <!-- Views -->        
+
+    <!-- Course View Chooser -->
+
+    <browser:page
+        for="agsci.ExtensionExtender.interfaces.IExtensionCourseExtender"
+        name="atct_topic_view"
+        class=".views.course.CourseViewChooserView"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+
+    <browser:menuItem
+        for="agsci.ExtensionExtender.interfaces.IExtensionCourseExtender"
+        menu="plone_displayviews"
+        title="Course View"
+        action="@@atct_topic_view"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        description="View For a Course that shows the upcoming event as a landing page."
+    />
+
+    <!-- Course View -->
+
+    <browser:page
+        for="agsci.ExtensionExtender.interfaces.IExtensionCourseExtender"
+        name="extension_course_view"
+        class=".views.course.CourseView"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+        template="templates/extension_course_view.pt"
+    />
+
+    <!-- Course Event View -->
+
+    <browser:page
+        for="agsci.ExtensionExtender.interfaces.IExtensionCourseExtender"
+        name="extension_course_event_view"
+        class=".views.course.CourseEventView"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+        template="templates/extension_course_event_view.pt"
+    />
+
+    <!-- Course Annual Event View -->
+
+    <browser:page
+        for="agsci.ExtensionExtender.interfaces.IExtensionCourseExtender"
+        name="extension_course_annual_event_view"
+        class=".views.course.CourseAnnualEventView"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+        template="templates/extension_course_annual_event_view.pt"
+    />
+
+    <!-- KML View -->
+    
+    <browser:page
+        for="*"
+        name="kml"
+        class=".views.kml.KMLView"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+
+    <browser:page
+        for="*"
+        name="kml_all"
+        class=".views.kml.KMLAllView"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+
+    <browser:page
+        for="*"
+        name="counties"
+        class=".views.drilldown.CountyView"
+        template="templates/drilldown.pt"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+
+    <browser:page
+        for="*"
+        name="course"
+        class=".views.drilldown.CoursesView"
+        template="templates/drilldown.pt"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+
+    <browser:page
+        for="*"
+        name="programs"
+        class=".views.drilldown.ProgramView"
+        template="templates/drilldown.pt"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+    
+    <browser:page
+        for="*"
+        name="topics"
+        class=".views.drilldown.TopicView"
+        template="templates/drilldown.pt"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+    
+    <browser:page
+        for="*"
+        name="extension_program_county"
+        class=".views.county.ExtensionProgramCountyView"
+        template="templates/extension_program_county.pt"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+
+    <browser:page
+        for="*"
+        name="pdf_factsheet"
+        class=".views.pdf.FactsheetPDFView"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+
+    <browser:page
+        for="*"
+        name="by_county_listing"
+        class=".views.county.ByCountyView"
+        template="templates/by_county_listing.pt"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+
+    <browser:menuItem
+        for="Products.ATContentTypes.interface.IATTopic"
+        menu="plone_displayviews"
+        title="By County View (Standard)"
+        action="@@by_county_listing"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        description="A view of items separated by county."
+    />
+
+    <browser:page
+        for="*"
+        name="by_county_summary_view"
+        class=".views.county.ByCountyView"
+        template="templates/by_county_summary_view.pt"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+
+    <browser:menuItem
+        for="Products.ATContentTypes.interface.IATTopic"
+        menu="plone_displayviews"
+        title="By County View (Summary)"
+        action="@@by_county_summary_view"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        description="A view of items separated by county."
+    />
+
+    <browser:page
+        for="Products.ATContentTypes.interfaces.event.IATEvent"
+        name="print_registration"
+        class=".views.registration.EventPrintRegistration"
+        template="templates/print_registration.pt"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+
+    <browser:page
+        for="*"
+        name="event_rss"
+        class=".views.events.EventProgramZIPView"
+        template="templates/event_rss_view.pt"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+
+</configure>

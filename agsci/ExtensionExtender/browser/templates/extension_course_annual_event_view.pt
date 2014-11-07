@@ -1,0 +1,67 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="plone">
+
+<body>
+
+    <metal:content-core fill-slot="content-core">
+    
+        <metal:listing use-macro="here/atct_topic_view/macros/body_macro">
+        
+            <tal:not-anon condition="not:isAnon">
+
+                <metal:annual-course fill-slot="annual-course">
+
+                    <dl class="portalMessage info">
+                        <dd i18n:translate="">
+                            <p>You are seeing this page because:</p>
+                            <ul>
+                            <li>You are logged in.</li>
+                            <li>This course is set to an '<strong>annual</strong>' course</li>
+                            <li>There is one (and only one) upcoming event.</li>
+                            </ul>
+                            <p>The public visitor will be 
+                                <span tal:condition="python: len(topicContents) == 1">
+                                    redirected to <a tal:attributes="href python: topicContents[0].getURL()"
+                                                        tal:content="python: topicContents[0].Title" />.
+                                </span>
+                                <span tal:condition="python: len(topicContents) == 0">
+                                    shown the landing page with no 'Upcoming Events' listing 
+                                </span>
+                            </p>
+                        </dd>
+                    </dl>
+
+                </metal:annual-course>
+
+            </tal:not-anon>            
+
+            <metal:folder-listing fill-slot="folder-listing">
+            </metal:folder-listing>            
+            
+            <metal:results-heading fill-slot="results-heading">
+                <tal:course 
+                    condition="python: isCourse and not noEventsCourse and not annualCourse">
+                    <h2>Upcoming Events</h2>
+                    <p class="discreet"
+                        tal:condition="python: not topicContents and here.listCriteria()">
+                        There are currently no events scheduled for this course.
+                    </p>
+                </tal:course>
+            </metal:results-heading>
+        
+            <metal:no-results fill-slot="no-results">
+            </metal:no-results>
+
+
+        
+        </metal:listing>
+    </metal:content-core>
+
+    <metal:content fill-slot="content-text">
+        <metal:text use-macro="here/atct_topic_view/macros/text-field-view" />
+    </metal:content>
+
+</body>
+</html>

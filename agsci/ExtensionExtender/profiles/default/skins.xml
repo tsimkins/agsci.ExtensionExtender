@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<object name="portal_skins" allow_any="False" cookie_persistence="False"
+        request_varname="plone_skin">
+
+ <!-- This list registers the folders that are stored in the skins directory
+      of your product (on the filesystem) as Filesystem Directory Views within
+      the portal_skins tool, so that they become usable as skin layers.
+      -->
+ <object name="extension_extender"
+    meta_type="Filesystem Directory View"
+    directory="agsci.ExtensionExtender:skins/extension_extender"/>
+
+  <skin-path name="*">
+    <layer name="extension_extender"
+       insert-after="custom"/>
+  </skin-path>
+
+</object>

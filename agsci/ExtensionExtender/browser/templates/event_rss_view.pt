@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<tal:block
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    define="folderContents view/getFolderContents|nothing;
+            objectList python: list(folderContents);
+            max_items python:len(objectList)">
+
+    <metal:block use-macro="context/@@rss_template_z3/macros/master">
+        <metal:title 
+            fill-slot="title"
+            tal:define="org_title context/org_title|nothing;
+                        page_title view/page_title|context/pretty_title_or_id;
+                        feed_title python: '%s - %s' % (page_title, org_title)"
+            tal:content="feed_title">
+                The title
+         </metal:title>
+    </metal:block>
+
+</tal:block>
+

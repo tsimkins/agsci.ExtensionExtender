@@ -1,0 +1,22 @@
+<tal:block condition="view/available"
+           i18n:domain="tags"
+           define="is_dropdown view/data/dropdown|nothing">
+
+<h2 class="portletHeader" tal:condition="view/data/show_header" tal:content="view/data/header" />
+    
+<dl tal:attributes="class python: is_dropdown and 'portlet tagPortlet portletDropdown' or 'portlet tagPortlet';
+                    data-select-label view/data/header|nothing;
+                    data-select-type view/drilldown_label|nothing">
+
+    <dd class="portletItem"
+        tal:repeat="tag view/tags">
+            <a tal:define="tag_id python:tag[0];
+                           tag_name python:tag[1];"
+                tal:attributes="href string:${context/parent_object/absolute_url}/${view/target_view}/${tag_id}">
+            <span tal:replace="tag_name" />
+            </a>
+    </dd>
+
+
+</dl>
+</tal:block>

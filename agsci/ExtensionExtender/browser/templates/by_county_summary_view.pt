@@ -1,0 +1,7 @@
+<metal:main metal:use-macro="context/by_county_listing/macros/main">
+
+    <metal:listing fill-slot="listing">
+        <div metal:use-macro="context/@@folder_summary_view_z3/macros/listing" />
+    </metal:listing>
+
+</metal:main>
