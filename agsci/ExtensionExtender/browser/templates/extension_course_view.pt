@@ -12,7 +12,7 @@
             <metal:results-heading fill-slot="results-heading">
                 <tal:course 
                     condition="python: isCourse and not noEventsCourse">
-                    <h2>Upcoming Events</h2>
+                    <h2 id="event-listing">Upcoming Events</h2>
                     <p class="discreet"
                         tal:condition="python: not topicContents and here.listCriteria()">
                         There are currently no events scheduled for this course.

@@ -363,6 +363,41 @@ data = {   'Adams': ['Adams', 'Cumberland', 'Franklin', 'York'],
                    'Wyoming'],
     'York': ['Adams', 'Cumberland', 'Dauphin', 'Lancaster', 'York']}
 
+districts = {
+    'District 1' : ['Crawford', 'Erie', 'Mercer', ],
+    'District 2' : ['Clarion', 'Forest', 'Venango', 'Warren', ],
+    'District 3' : ['Cameron', 'Elk', 'Jefferson', 'McKean', 'Potter', ],
+    'District 4' : ['Bradford', 'Sullivan', 'Susquehanna', 'Tioga', ],
+    'District 5' : ['Beaver', 'Butler', 'Lawrence', ],
+    'District 6' : ['Armstrong', 'Indiana', 'Westmoreland', ],
+    'District 7' : ['Centre', 'Clearfield', 'Clinton', 'Lycoming', ],
+    'District 8' : ['Lackawanna', 'Luzerne', 'Wyoming', ],
+    'District 9' : ['Carbon', 'Monroe', 'Pike', 'Wayne', ],
+    'District 10' : ['Fayette', 'Greene', 'Washington', ],
+    'District 11' : ['Bedford', 'Cambria', 'Somerset', ],
+    'District 12' : ['Blair', 'Fulton', 'Huntingdon', ],
+    'District 13' : ['Juniata', 'Mifflin', ],
+    'District 14' : ['Columbia', 'Montour', 'Northumberland', 'Snyder', 'Union', ],
+    'District 15' : ['Cumberland', 'Dauphin', 'Perry', ],
+    'District 16' : ['Adams', 'Franklin', 'York', ],
+    'District 17' : ['Chester', 'Lancaster', 'Lebanon', ],
+    'District 18' : ['Berks', 'Schuylkill', ],
+    'District 19' : ['Bucks', 'Delaware', 'Montgomery', ],
+    'District 20' : ['Lehigh', 'Northampton', ],
+    'Pittsburgh' : ['Allegheny'],
+    'Philadelphia' : ['Philadelphia'],
+}
+
+county_to_district = {}
+
+for (k,v) in districts.iteritems():
+    for i in v:
+        county_to_district[i] = k
+
+def getDistrict(county):
+    county = county.title().replace('Mckean', 'McKean')
+    return county_to_district.get(county, '')
+
 def getSurroundingCounties(county):
     #sanitize
     county = county.title().replace('Mckean', 'McKean')
