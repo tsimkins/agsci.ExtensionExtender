@@ -120,11 +120,17 @@ class ExtensionZIPCodeTool(UniqueObject, SimpleItem):
 
     security.declarePublic('toZIP5')
     def toZIP5(self, zipcode):
-        zipcode = zipcode.strip()
+
+        try:
+            zipcode = zipcode.strip()
+        except AttributeError:
+            return None
+
         try:
             match_obj = self.zip_regex.match(zipcode)
         except TypeError:
             return None
+
         if match_obj:
             if match_obj.group(1) == '00000':
                 return None
