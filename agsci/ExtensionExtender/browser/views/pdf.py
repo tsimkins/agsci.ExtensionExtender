@@ -775,7 +775,7 @@ class FactsheetPDFView(FolderView):
         if show_leadimage and leadImage_field and leadImage_caption_field:
             leadImage = leadImage_field.get(self.context)
             leadImage_caption = leadImage_caption_field.get(self.context)
-            if leadImage.get_size():
+            if leadImage and leadImage.get_size():
                 if column_count == 1:
                     pdf.append(getImage(leadImage, caption=leadImage_caption, leadImage=True))
 
