@@ -313,6 +313,16 @@ class ExtensionExtender(object):
                     description=u"Academic Departments that this item is associated with",
                     condition="python:member.has_role('Manager', object)",
                 ),
+            _ExtensionStringField(
+                "extension_override_page_count",
+                    schemata="Publication",
+                    required=False,
+                    searchable=False,
+                    widget=StringWidget(
+                        label=u"Override automatic page count",
+                    condition="python:member.has_role('Manager', object)",
+                    ),
+            ),
             ),
         ]
 
