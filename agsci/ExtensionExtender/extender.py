@@ -314,6 +314,16 @@ class ExtensionExtender(object):
                     condition="python:member.has_role('Manager', object)",
                 ),
             ),
+            _ExtensionStringField(
+                "extension_override_page_count",
+                    schemata="Publication",
+                    required=False,
+                    searchable=False,
+                    widget=StringWidget(
+                        label=u"Override automatic page count",
+                    condition="python:member.has_role('Manager', object)",
+                    ),
+            ),
         ]
 
     def __init__(self, context):
@@ -391,11 +401,26 @@ class ExtensionFilePublicationExtender(FilePublicationExtender, ExtensionExtende
 
     layer = IExtensionExtenderLayer
 
+    custom_fields = [
+        _ExtensionStringField(
+            "extension_publication_sample",
+            schemata="Publication",
+            required=False,
+            default=False,
+            widget=BooleanWidget(
+                label=u"Sample File",
+                description=u"This file is a sample of the full publication.",
+                condition="python:member.has_role('Manager', object)",
+            ),
+        ),
+    ]
+
     @property
     def fields(self):
         fields = super(ExtensionFilePublicationExtender, self).fields
         fields.extend(self.publication_fields)
         fields.extend(super(ExtensionFilePublicationExtender, self).program_fields)
+        fields.extend(self.custom_fields)
         return fields
 
     def fiddle(self, schema):
