@@ -4,6 +4,7 @@ from Globals import InitializeClass
 from OFS.SimpleItem import SimpleItem
 from AccessControl import ClassSecurityInfo
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.utils import safe_unicode
 
 try:
     from zope.app.component.hooks import getSite
@@ -122,7 +123,7 @@ class ExtensionCourseTool(UniqueObject, SimpleItem):
            
         }
 
-        title = event_title.decode('utf-8').lower().strip()
+        title = safe_unicode(event_title).lower().strip()
         
         char_regex = re.compile("[^a-zA-Z0-9]", re.I|re.M)
        
@@ -174,7 +175,7 @@ class ExtensionCourseTool(UniqueObject, SimpleItem):
                 # Skip if the course is already assigned
                 continue
 
-            title = r.Title.decode('utf-8')
+            title = safe_unicode(r.Title)
 
             if course:
                 # Get object
