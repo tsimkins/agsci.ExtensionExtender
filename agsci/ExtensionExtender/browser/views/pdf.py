@@ -906,7 +906,7 @@ class FactsheetPDFView(FolderView):
 
         # Append the publication code, if it exists
         if publication_code:
-            statement_text.append("Publication code: %s" % publication_code)
+            statement_text.append("Code: %s" % publication_code)
 
         # Create paragraphs from the statement text
         for s in statement_text:
