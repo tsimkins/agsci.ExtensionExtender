@@ -26,7 +26,7 @@ def getCachedCourses(portal_catalog):
 
     results =  portal_catalog.searchResults({'portal_type' : ['Topic', 'Folder'], 'Subject' : 'courses', 'sort_on' : 'sortable_title'})
 
-    return list(set([x.Title for x in results]))
+    return sorted(list(set([x.Title for x in results])))
 
 class ExtensionCourseTool(UniqueObject, SimpleItem):
 
