@@ -22,7 +22,9 @@
                 <li tal:repeat="t tags"
                     tal:content="t" />
             </ul>
-            <p><a tal:attributes="href view/original_context/absolute_url" tal:content="string:Unfilter..." /></p>
+            <p><a rel="nofollow"
+                  tal:attributes="href view/original_context/absolute_url" 
+                  tal:content="string:Unfilter..." /></p>
             </div>
 
             <metal:listing use-macro="context/@@tags/macros/listing" />
