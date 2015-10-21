@@ -376,7 +376,7 @@ class FactsheetPDFView(FolderView):
                     for i in item.findAll('li'):
                         pdf.append(Paragraph('<seq id="%s" />. %s' % (li_uuid, getInlineContents(i)), bullet_list))
                     pdf.append(Paragraph('<seqReset id="%s" />' % li_uuid, styles['Normal']))
-                elif item_type in ['p'] or (item_type in ['div'] and 'captionedImage' in className):
+                elif item_type in ['p'] or (item_type in ['div'] and 'captionedImage' in className or 'callout' in className or 'pullquote' in className):
 
                     has_image = False
 
@@ -410,6 +410,8 @@ class FactsheetPDFView(FolderView):
                     # Don't add anything if no contents.
                     if not p_contents:
                         pass
+                    elif 'callout' in className or 'pullquote' in className:
+                        pdf.append(Paragraph(p_contents, callout))
                     elif 'discreet' in className or 'captionedImage' in className:
                         if len(pdf) and isinstance(pdf[-1], Image):
                             pdf[-1].keepWithNext = True
@@ -470,6 +472,9 @@ class FactsheetPDFView(FolderView):
         # Colors - Maybe have presets?
         #header_rgb = (0.42,0.56,0.07)
         header_rgb = (0.12,0.18,0.30)
+        
+        # Callout Colors
+        callout_background_rgb = (0.95, 0.95, 0.95)
 
         # Styles
 
@@ -550,6 +555,18 @@ class FactsheetPDFView(FolderView):
         discreet.textColor = 'gray'
         discreet.spaceAfter = 8
         discreet.spaceBefore = 1
+
+        callout = ParagraphStyle('Callout')
+        callout.fontSize = 10
+        callout.textColor = header_rgb
+        callout.spaceAfter = 20
+        callout.spaceBefore = 22
+        callout.backColor = callout_background_rgb
+        callout.borderColor = header_rgb
+        callout.borderWidth = 1
+        callout.borderPadding = (8, 12, 10, 12)
+        callout.rightIndent = 15
+        callout.leftIndent = 15
 
         statement = ParagraphStyle('Statement')
         statement.fontSize = 9
@@ -891,7 +908,8 @@ class FactsheetPDFView(FolderView):
         pdf.append(getImage(extension_url_image, scale=True, width=extension_url_image_width, style=padded_image, hAlign='LEFT', body_image=False))
 
         # Choose which statement
-        aa_statement = """Penn State is an equal opportunity, affirmative action employer, and is committed to providing employment opportunities to minorities, women, veterans, individuals with disabilities, and other protected groups. <a href="http://guru.psu.edu/policies/AD85.html">Nondiscrimination: http://guru.psu.edu/policies/AD85.html</a>."""
+        aa_statement = """Penn State is an equal opportunity, affirmative action employer, and is committed to providing employment opportunities to all qualified applicants without regard to race, color, religion, age, sex, sexual orientation, gender identity, national origin, disability or protected veteran status."""
+        
         statement_text = ("""<b>Penn State College of Agricultural Sciences research and extension programs are funded in part by Pennsylvania counties, the Commonwealth of Pennsylvania, and the U.S. Department of Agriculture.</b>
 
         Where trade names appear, no discrimination is intended, and no endorsement by Penn State Cooperative Extension is implied.
