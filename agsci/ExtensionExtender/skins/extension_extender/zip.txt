@@ -1211,15 +1211,10 @@ zipcode	locationtext	county
 17326	Gettysburg, PA	Adams
 17327	Glen Rock, PA	York
 17329	Glenville, PA	York
-17331	Hanover, PA	Lehigh
 17331	Hanover, PA	York
-17332	Hanover, PA	Lehigh
 17332	Hanover, PA	York
-17333	Hanover, PA	Lehigh
 17333	Hanover, PA	York
-17334	Hanover, PA	Lehigh
 17334	Hanover, PA	York
-17335	Hanover, PA	Lehigh
 17335	Hanover, PA	York
 17337	Idaville, PA	Adams
 17339	Lewisberry, PA	York
