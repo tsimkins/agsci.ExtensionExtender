@@ -198,4 +198,60 @@
         permission="zope2.View"
     />
 
+    <!-- Atlas Content Review Views -->
+    
+    <browser:page
+        for="*"
+        name="atlas_owner_review"
+        template="templates/atlas_content_review.pt"
+        class=".views.atlas.AtlasContentReview"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+    
+    <browser:page
+        for="*"
+        name="atlas_web_review"
+        template="templates/atlas_content_review.pt"
+        class=".views.atlas.AtlasWebReview"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+    
+    <browser:page
+        for="*"
+        name="atlas_ready_review"
+        template="templates/atlas_content_review.pt"
+        class=".views.atlas.AtlasReadyReview"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+
+    <browser:page
+        for="*"
+        name="atlas_feedback_review"
+        template="templates/atlas_content_review.pt"
+        class=".views.atlas.AtlasFeedbackReview"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+
+    <browser:page
+        for="*"
+        name="atlas_invalid_owner"
+        template="templates/atlas_content_review.pt"
+        class=".views.atlas.AtlasInvalidOwner"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+    
+    <browser:page
+        for="*"
+        name="atlas_pre_review"
+        template="templates/atlas_content_review.pt"
+        class=".views.atlas.AtlasPreReview"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+
 </configure>

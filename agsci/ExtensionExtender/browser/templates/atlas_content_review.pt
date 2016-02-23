@@ -1,0 +1,89 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="plone">
+
+    <body>
+
+    <metal:styleslot fill-slot="style_slot">
+        <style type="text/css">
+           
+            #content ul {
+                list-style-type: none;
+            }
+            
+            #content > ul {
+                margin-left: 0;
+            }
+            
+            .managePortletsAboveLink {
+                display: none;
+            }
+
+        </style>
+    </metal:styleslot>
+
+    <div id="portal-columns" metal:fill-slot="portal-columns">
+
+        <div id="portal-column-content">
+        
+            <div id="content"
+                tal:define="results view/getReviewStructure;
+                            review_state view/review_state;
+                            review_state_str view/getReviewStates;
+                            user_id view/getUserId|nothing;">
+                
+                <h1 class="documentFirstHeading" tal:content="view/title" />
+                
+                <div class="documentDescription">
+                    Listing of <strong tal:content="review_state_str" /> 
+                    Items 
+                    <tal:user tal:condition="user_id"> for <strong tal:content="user_id" /> </tal:user>
+                </div>
+                
+                <tal:results tal:condition="results"
+                        tal:define="children results">
+
+                    <ul metal:define-macro="content_tree">
+
+                        <li tal:repeat="i children">
+
+                            <tal:item tal:define="brain python:i.get('brain');
+                                                    needs_review python: brain.review_state in review_state">
+                                <a 
+                                    tal:attributes="href brain/getURL"
+                                    tal:omit-tag="not:needs_review"
+                                    ><strong tal:content="brain/Title" /></a> 
+                                <tal:description condition="needs_review">
+                                    [<tal:type replace="brain/portal_type" />] <br />
+                                    <span tal:content="brain/Description" />
+                                </tal:description>
+                                <tal:subtree
+                                    define="children python:i.get('children', [])">
+                                    <ul metal:use-macro="here/@@atlas_owner_review/macros/content_tree" />
+                                </tal:subtree>
+                            </tal:item>
+
+                        </li>
+                    </ul>
+                </tal:results>
+                
+                <p tal:condition="not:results">
+                    No results.
+                </p>
+                
+            </div>
+
+        </div>
+
+    </div>
+
+
+    
+
+    </body>
+    
+</html>
