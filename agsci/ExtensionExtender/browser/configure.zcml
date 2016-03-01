@@ -199,6 +199,14 @@
     />
 
     <!-- Atlas Content Review Views -->
+
+    <browser:page
+        for="*"
+        name="atlas"
+        class=".views.atlas.AtlasGenericRedirect"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
     
     <browser:page
         for="*"

@@ -36,6 +36,16 @@
                             review_state_str view/getReviewStates;
                             user_id view/getUserId|nothing;">
                 
+                <h2 class="atlas-queue">Atlas Review Queues</h2>
+                
+                <ul id="atlas-review-nav">
+                    <li tal:repeat="i view/navigation_items">
+                        <a 
+                            tal:attributes="href python:i[0]"
+                            tal:content="python: i[1]" />
+                    </li>
+                </ul>
+                
                 <h1 class="documentFirstHeading" tal:content="view/title" />
                 
                 <div class="documentDescription">
@@ -47,19 +57,31 @@
                 <tal:results tal:condition="results"
                         tal:define="children results">
 
-                    <ul metal:define-macro="content_tree">
+                    <ul class="atlas-content-tree" metal:define-macro="content_tree">
 
                         <li tal:repeat="i children">
 
                             <tal:item tal:define="brain python:i.get('brain');
-                                                    needs_review python: brain.review_state in review_state">
+                                                  needs_review python: view.needsReview(brain)">
                                 <a 
-                                    tal:attributes="href brain/getURL"
+                                    tal:attributes="href python: view.getItemURL(brain)"
                                     tal:omit-tag="not:needs_review"
                                     ><strong tal:content="brain/Title" /></a> 
-                                <tal:description condition="needs_review">
-                                    [<tal:type replace="brain/portal_type" />] <br />
-                                    <span tal:content="brain/Description" />
+                                <tal:description 
+                                    condition="needs_review">
+                                    <div class="discreet">[<tal:type replace="brain/portal_type" />, <tal:type replace="brain/Creator" />]</div>
+                                    <div class="atlas-workflow"
+                                        tal:condition="view/show_actions|nothing">
+                                        
+                                        <a 
+                                            tal:repeat="i python: view.getWorkflowActions(brain)"
+                                            tal:attributes="href python:i.get('url');"
+                                            tal:content="python:i.get('name')" />
+                                            
+                                        <a tal:attributes="href string:${brain/getURL}/content_status_history">Advanced</a>
+                                            
+                                    </div>
+                                    <div tal:content="brain/Description" />
                                 </tal:description>
                                 <tal:subtree
                                     define="children python:i.get('children', [])">
