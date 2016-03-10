@@ -36,15 +36,46 @@
                             review_state_str view/getReviewStates;
                             user_id view/getUserId|nothing;">
                 
-                <h2 class="atlas-queue">Atlas Review Queues</h2>
-                
-                <ul id="atlas-review-nav">
-                    <li tal:repeat="i view/navigation_items">
-                        <a 
-                            tal:attributes="href python:i[0]"
-                            tal:content="python: i[1]" />
-                    </li>
-                </ul>
+                <div class="atlas-controls">
+                    
+                    <h2 class="atlas-queue">Atlas Review Queues</h2>
+                    
+                    <div class="atlas-review-nav">
+                        <ul>
+                            <li tal:repeat="i view/navigation_items">
+                                <a 
+                                    tal:attributes="href python:i[0];
+                                                    class python: i[2] and 'selected' or ''"
+                                    tal:content="python: i[1]" />
+                            </li>
+                        </ul>
+                        <div class="visualClear"><!-- --></div>
+                    </div>
+                    
+                    <form method="POST" 
+                        class="atlas-filter"
+                        tal:condition="view/showOwnerFilter"
+                        tal:attributes="action string:@@${view/__name__}">
+    
+                        <h2 class="atlas-queue">Filter By Owner</h2>
+    
+                        <label for="user_id">Owner</label>
+    
+                        <select name="user_id" id="user_id">
+                            <option value="">Select an owner to filter by...</option>
+                            <option 
+                                tal:repeat="i view/getReviewQueueOwners"
+                                tal:content="i"
+                                tal:attributes="value i;
+                                                selected python:(view.getUserId() == i) and 'selected' or ''"
+                                >
+                            </option>
+                        </select>
+    
+                        <input type="submit" value="Filter" />
+                    </form>
+
+                </div>
                 
                 <h1 class="documentFirstHeading" tal:content="view/title" />
                 
@@ -61,7 +92,7 @@
 
                         <li tal:repeat="i children">
 
-                            <tal:item tal:define="brain python:i.get('brain');
+                            <div class="atlas-item" tal:define="brain python:i.get('brain');
                                                   needs_review python: view.needsReview(brain)">
                                 <a 
                                     tal:attributes="href python: view.getItemURL(brain)"
@@ -70,9 +101,15 @@
                                 <tal:description 
                                     condition="needs_review">
                                     <div class="discreet">[<tal:type replace="brain/portal_type" />, <tal:type replace="brain/Creator" />]</div>
+                                    <div class="description" 
+                                         tal:content="brain/Description" 
+                                         tal:condition="brain/Description"/>
+
                                     <div class="atlas-workflow"
                                         tal:condition="view/show_actions|nothing">
-                                        
+
+                                        <span>Change state:</span>
+
                                         <a 
                                             tal:repeat="i python: view.getWorkflowActions(brain)"
                                             tal:attributes="href python:i.get('url');"
@@ -81,13 +118,13 @@
                                         <a tal:attributes="href string:${brain/getURL}/content_status_history">Advanced</a>
                                             
                                     </div>
-                                    <div tal:content="brain/Description" />
+
                                 </tal:description>
                                 <tal:subtree
                                     define="children python:i.get('children', [])">
                                     <ul metal:use-macro="here/@@atlas_owner_review/macros/content_tree" />
                                 </tal:subtree>
-                            </tal:item>
+                            </div>
 
                         </li>
                     </ul>

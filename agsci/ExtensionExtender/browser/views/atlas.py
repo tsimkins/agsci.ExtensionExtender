@@ -36,7 +36,20 @@ class AtlasContentReview(FolderView):
         'atlas_pre_review' : 'Preliminary Review',
     }
 
-    nav = ['atlas_owner_review', 'atlas_feedback_review']
+    default_nav = ['atlas_owner_review', 'atlas_feedback_review']
+
+    nav_items_by_role = {
+        'Atlas Manager' : [
+                            'atlas_owner_review', 'atlas_pre_review', 
+                            'atlas_invalid_owner', 'atlas_web_review', 
+                            'atlas_feedback_review', 'atlas_ready_review',
+                        ],
+        'Atlas Content Manager' : [
+                            'atlas_owner_review',  
+                            'atlas_invalid_owner',  
+                            'atlas_feedback_review', 
+                        ],
+    }
 
     show_actions = False
 
@@ -61,8 +74,15 @@ class AtlasContentReview(FolderView):
         
             if brain.portal_type in ['Subsite', 'Section', 'Blog']:
                 return False
-                
-            return brain.review_state in self.review_state
+            
+            review_state_match = (brain.review_state in self.review_state)
+            
+            user_id = self.getUserId()
+            
+            if user_id:
+                return (brain.Creator == user_id) and review_state_match
+            
+            return review_state_match
 
         return False
 
@@ -72,20 +92,22 @@ class AtlasContentReview(FolderView):
             
         return None
 
-    def getNavigationItemData(self, view_name, user_id):
+    def getNavigationItemData(self, view_name):
 
-        if user_id:
-            url = '%s/@@%s/%s' % (self.context.absolute_url(), view_name, user_id)
-        else:
-            url = '%s/@@%s' % (self.context.absolute_url(), view_name)
+        url = '%s/@@%s' % (self.context.absolute_url(), view_name)
 
-        return (url, self.getViewTitle(view_name))
+        return (url, self.getViewTitle(view_name), (self.__name__ == view_name))
+
+    def getNavigationItemsByRole(self):
+        role = self.getAtlasRole()
+        
+        return self.nav_items_by_role.get(role, self.default_nav)
 
     def navigation_items(self):
 
         user_id = getattr(self, 'user_id', None) 
 
-        return [self.getNavigationItemData(x, user_id) for x in self.nav]
+        return [self.getNavigationItemData(x) for x in self.getNavigationItemsByRole()]
 
     def getViewTitle(self, view_name=None):
         if not view_name:
@@ -111,9 +133,10 @@ class AtlasContentReview(FolderView):
     def getReviewStates(self):
         return ', '.join(self.review_state)
 
+    @memoize
     def getUserId(self):
 
-        user_id = getattr(self, 'user_id', None)
+        user_id = getattr(self, 'user_id', self.request.form.get('user_id', None))
         
         if user_id:
 
@@ -122,17 +145,51 @@ class AtlasContentReview(FolderView):
 
             return user_id
         
-        user = self.portal_membership.getAuthenticatedMember()
-        
-        if user:
-            return user.getId()
+        if not self.isPowerUser():
+            user = self.portal_membership.getAuthenticatedMember()
+            
+            if user:
+                return user.getId()
             
         return None
 
-    def isAtlasManager(self):
-        user = self.portal_membership.getAuthenticatedMember()
-        return 'Atlas Manager' in user.getRolesInContext(self.context)
 
+    @memoize
+    def getAtlasRole(self):
+        atlas_roles = ['Atlas Manager', 'Atlas Content Manager']
+    
+        user = self.portal_membership.getAuthenticatedMember()
+        
+        user_roles = filter(lambda x:atlas_roles.count(x), user.getRolesInContext(self.context))
+        
+        try:
+            return user_roles[0]
+        except IndexError:
+            return None
+
+
+    def showOwnerFilter(self):
+        if self.getUserId():
+            return False
+        
+        if not self.getReviewQueueOwners():
+            return False
+    
+        return self.isPowerUser()
+
+
+    def isPowerUser(self):
+        return (self.isAtlasManager() or self.isAtlasContentManager())
+
+        
+    def isAtlasManager(self):
+        return (self.getAtlasRole() == 'Atlas Manager')
+
+
+    def isAtlasContentManager(self):
+        return (self.getAtlasRole() == 'Atlas Content Manager')
+
+    @memoize
     def getReviewStructure(self):
     
         site_url = '/'.join(getSite().getPhysicalPath())
@@ -146,7 +203,7 @@ class AtlasContentReview(FolderView):
             for i in range(len(site_url.split('/'))+1,len(r_path)+1):
                 paths.append('/'.join(r_path[0:i]))
 
-        results = self.portal_catalog.queryCatalog({'path' : {'query': paths, 'depth' : 0}})
+        results = self.portal_catalog.searchResults({'path' : {'query': paths, 'depth' : 0}})
 
         bh = BrainHierarchy(site_url)
 
@@ -166,6 +223,7 @@ class AtlasContentReview(FolderView):
         else:
             return '/'.join(self.context.getPhysicalPath())
 
+    @memoize
     def getReviewQueue(self):
 
         query = {
@@ -185,7 +243,27 @@ class AtlasContentReview(FolderView):
 
         query['portal_type'] = self.content_types
 
-        return self.portal_catalog.queryCatalog(query)
+        return self.portal_catalog.searchResults(query)
+
+    @memoize
+    def getValidIds(self):
+    
+        valid_people = self.portal_catalog.searchResults({'portal_type' : 'FSDPerson', 'expires' : {'query' : DateTime(), 'range' : 'min'}})
+
+        return [x.getId for x in valid_people]
+
+    @memoize
+    def getInvalidIds(self):
+
+        valid_people_ids = self.getValidIds()
+        
+        creators = self.portal_catalog.uniqueValuesFor('Creator')
+        
+        return list(set(creators) - set(valid_people_ids))
+
+    def getReviewQueueOwners(self):
+        return set([x.Creator for x in self.getReviewQueue()])
+
 
 class AtlasFeedbackReview(AtlasContentReview):
     
@@ -195,12 +273,6 @@ class AtlasFeedbackReview(AtlasContentReview):
 class AtlasWebReview(AtlasContentReview):
     
     review_state = ["atlas-web-team-review", ]
-
-    nav = ['atlas_pre_review', 'atlas_invalid_owner', 'atlas_web_review', 
-           'atlas_feedback_review', 'atlas_ready_review']
-
-    def getUserId(self):
-        return None
 
 
 class AtlasPreReview(AtlasWebReview):
@@ -250,20 +322,6 @@ class AtlasInvalidOwner(AtlasWebReview):
         return False
 
     @memoize
-    def getValidIds(self):
-    
-        valid_people = self.portal_catalog.queryCatalog({'portal_type' : 'FSDPerson', 'expires' : {'query' : DateTime(), 'range' : 'min'}})
-
-        return [x.getId for x in valid_people]
-
-    def getInvalidIds(self):
-
-        valid_people_ids = self.getValidIds()
-        
-        creators = self.portal_catalog.uniqueValuesFor('Creator')
-        
-        return list(set(creators) - set(valid_people_ids))
-
     def getReviewQueue(self):
 
         query = {
@@ -277,13 +335,16 @@ class AtlasInvalidOwner(AtlasWebReview):
             query['path'] = paths
 
         invalid_ids = self.getInvalidIds()
-        
-        if invalid_ids:
+        user_id = self.getUserId()
+
+        if user_id:
+            query['Creator'] = user_id        
+        elif invalid_ids:
             query['Creator'] = invalid_ids
             
         query['portal_type'] = self.content_types
 
-        return self.portal_catalog.queryCatalog(query)
+        return self.portal_catalog.searchResults(query)
 
 class BrainHierarchy(object):
 
