@@ -31,23 +31,29 @@ class AtlasContentReview(FolderView):
         'atlas_owner_review' : 'Owner Review',
         'atlas_web_review' : 'Web Team Review',
         'atlas_ready_review' : 'Ready Content',
-        'atlas_feedback_review' : 'Owner Feedback Required',
+        'atlas_feedback_review' : 'Owner Feedback',
         'atlas_invalid_owner' : 'Invalid Owners',
         'atlas_pre_review' : 'Preliminary Review',
+        'atlas_archive_review' : 'Archived Content',
     }
 
-    default_nav = ['atlas_owner_review', 'atlas_feedback_review']
+    default_nav = [
+                    'atlas_owner_review', 'atlas_feedback_review', 
+                    'atlas_ready_review', 'atlas_archive_review'
+                  ]
 
     nav_items_by_role = {
         'Atlas Manager' : [
                             'atlas_owner_review', 'atlas_pre_review', 
                             'atlas_invalid_owner', 'atlas_web_review', 
                             'atlas_feedback_review', 'atlas_ready_review',
+                            'atlas_archive_review'
                         ],
         'Atlas Content Manager' : [
                             'atlas_owner_review',  
                             'atlas_invalid_owner',  
                             'atlas_feedback_review', 
+                            'atlas_archive_review' 
                         ],
     }
 
@@ -61,10 +67,15 @@ class AtlasContentReview(FolderView):
     def portal_workflow(self):
         return getToolByName(self.context, 'portal_workflow')
 
+    def addTokenToUrl(self, url):
+        return addTokenToUrl(url)
+
     def getWorkflowActions(self, brain=None):
         if brain and hasattr(brain, 'getObject'):
             obj = brain.getObject()
+
             transitions = self.portal_workflow.getTransitionsFor(obj)
+
             return [x for x in transitions if 'atlas' in x.get('id', '')]
 
         return []
@@ -86,6 +97,13 @@ class AtlasContentReview(FolderView):
 
         return False
 
+    def getReviewStateClass(self, brain=None):
+        if brain:
+            if len(self.review_state) > 1:
+                return 'state-%s' % brain.review_state
+            
+        return ''
+        
     def getItemURL(self, brain=None):
         if brain:
             return brain.getURL()
@@ -286,7 +304,11 @@ class AtlasReadyReview(AtlasWebReview):
     
     review_state = ["atlas-ready", ]
 
-
+class AtlasArchiveReview(AtlasWebReview):
+    
+    review_state = ["atlas-archive", ]
+    
+    
 class AtlasInvalidOwner(AtlasWebReview):
 
     review_state = ['published', 'atlas-pending', 'atlas-web-team-review', 'atlas-feedback', 'atlas-ready']

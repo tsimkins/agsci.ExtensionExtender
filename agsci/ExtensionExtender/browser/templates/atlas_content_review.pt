@@ -35,6 +35,8 @@
                             review_state view/review_state;
                             review_state_str view/getReviewStates;
                             user_id view/getUserId|nothing;">
+
+                <h1 class="documentFirstHeading" tal:content="view/title" />
                 
                 <div class="atlas-controls">
                     
@@ -77,8 +79,6 @@
 
                 </div>
                 
-                <h1 class="documentFirstHeading" tal:content="view/title" />
-                
                 <div class="documentDescription">
                     Listing of <strong tal:content="review_state_str" /> 
                     Items 
@@ -95,7 +95,8 @@
                             <div class="atlas-item" tal:define="brain python:i.get('brain');
                                                   needs_review python: view.needsReview(brain)">
                                 <a 
-                                    tal:attributes="href python: view.getItemURL(brain)"
+                                    tal:attributes="href python: view.getItemURL(brain);
+                                                    class python: view.getReviewStateClass(brain);"
                                     tal:omit-tag="not:needs_review"
                                     ><strong tal:content="brain/Title" /></a> 
                                 <tal:description 
@@ -112,7 +113,7 @@
 
                                         <a 
                                             tal:repeat="i python: view.getWorkflowActions(brain)"
-                                            tal:attributes="href python:i.get('url');"
+                                            tal:attributes="href python:view.addTokenToUrl(i.get('url'));"
                                             tal:content="python:i.get('name')" />
                                             
                                         <a tal:attributes="href string:${brain/getURL}/content_status_history">Advanced</a>
