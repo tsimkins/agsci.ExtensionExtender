@@ -177,7 +177,8 @@ class FactsheetPDFView(FolderView):
                 mailHost = self.context.MailHost
         
                 for mTo in emailUsers:
-                    mailHost.secureSend(mMsg.encode('utf-8'), mto=mTo, mfrom=mFrom, subject=mSubj, subtype='html')
+                    continue
+                    #mailHost.secureSend(mMsg.encode('utf-8'), mto=mTo, mfrom=mFrom, subject=mSubj, subtype='html')
     
                 # Return error message
                 return "<h1>Error</h1><p>Sorry, an error has occurred.</p>"
@@ -471,7 +472,9 @@ class FactsheetPDFView(FolderView):
 
         # Colors - Maybe have presets?
         #header_rgb = (0.42,0.56,0.07)
-        header_rgb = (0.12,0.18,0.30)
+        #header_rgb = (0.12,0.18,0.30) # Blue
+        #header_rgb = (0.33,0.57,0.31) # Green (too light)
+        header_rgb = (0.30,0.51,0.28) # Green (dark enough)
         
         # Callout Colors
         callout_background_rgb = (0.95, 0.95, 0.95)
@@ -484,9 +487,23 @@ class FactsheetPDFView(FolderView):
         styles['Normal'].spaceAfter = 6
         styles['Normal'].fontName = 'Times-Roman'
 
-        styles['Heading1'].fontSize = 24
-        styles['Heading1'].leading = 28
-        styles['Heading1'].spaceAfter = 4
+        series_heading = ParagraphStyle('Series')
+        series_heading.spaceBefore = 2
+        series_heading.spaceAfter = 12
+        series_heading.fontSize = 25
+        series_heading.textColor = header_rgb
+        series_heading.leading = 29
+        series_heading.fontName = 'Helvetica-Bold'
+
+        styles['Heading1'].fontSize = 16
+        styles['Heading1'].fontName = 'Helvetica'
+        styles['Heading1'].leading = 20
+        styles['Heading1'].spaceBefore = 6
+        styles['Heading1'].spaceAfter = 8
+        styles['Heading1'].backColor = header_rgb
+        styles['Heading1'].textColor = (1,1,1)
+        styles['Heading1'].borderPadding = (2,0,4,5) # 3px left border
+        styles['Heading1'].leftIndent = 5        
 
         styles['Heading2'].allowWidows = 0
         styles['Heading2'].fontName = 'Helvetica-Bold'
@@ -500,7 +517,7 @@ class FactsheetPDFView(FolderView):
         styles['Heading3'].fontName = 'Helvetica-Bold'
         styles['Heading3'].fontSize = 12
         styles['Heading3'].leading = 14
-        styles['Heading3'].spaceAfter = 6
+        styles['Heading3'].spaceAfter = 4
         styles['Heading3'].textColor = header_rgb
                 
         styles['Heading4'].allowWidows = 0
@@ -528,13 +545,6 @@ class FactsheetPDFView(FolderView):
         td_cell_right.fontSize = 10
         td_cell_right.fontName = 'Times-Roman'
         td_cell_right.alignment = TA_RIGHT
-
-        
-        series_heading = ParagraphStyle('Series')
-        series_heading.spaceBefore = 2
-        series_heading.spaceAfter = 10
-        series_heading.fontSize = 16
-        series_heading.textColor = header_rgb
 
         bullet_list = ParagraphStyle('BulletList')
         bullet_list.spaceBefore = 4
@@ -569,14 +579,16 @@ class FactsheetPDFView(FolderView):
         callout.leftIndent = 15
 
         statement = ParagraphStyle('Statement')
-        statement.fontSize = 9
+        statement.fontSize = 8
         statement.fontName = 'Times-Roman'
-        statement.spaceAfter = 6
+        statement.spaceAfter = 5
+        statement.leading = 10
 
         description = ParagraphStyle('Description')
-        description.fontSize = 16
+        description.fontSize = 14
+        description.spaceBefore = 6
         description.spaceAfter = 8
-        description.leading = 20
+        description.leading = 17
 
         if description_body:
             description.fontSize = 11
@@ -601,10 +613,13 @@ class FactsheetPDFView(FolderView):
 
         # Create document
         pdf_file = BytesIO()
-        margin = 45
+        margin = 36
+
+        # Debug for formatting boundary
+        showBoundary=0
 
         doc = FactsheetDocTemplate(pdf_file,pagesize=letter, title=title,
-                                   rightMargin=margin,leftMargin=margin, showBoundary=0,
+                                   rightMargin=margin,leftMargin=margin, showBoundary=showBoundary,
                                    topMargin=margin,bottomMargin=margin)
 
         # Standard padding for document elements
@@ -663,52 +678,29 @@ class FactsheetPDFView(FolderView):
 
         #-------------- calculated coordinates/w/h
 
-        # Extension image header
-        header_image_width = 175.0
-        header_image_x = doc.leftMargin + (doc.width-(header_image_width))/2
-        header_image_padding = 3*element_padding
-
-        header_image = self.site.portal_skins.agcommon_images['penn-state-extension-word-mark-white.png']
-        header_image_height = (header_image_width/header_image.width)*header_image.height
-
         extension_url_image = self.site.portal_skins.agcommon_images['extension-url.png']
         extension_url_image_width = 0.5*max_image_width
 
-        # Colored background box
-        header_bg_y = doc.height + header_image_height
-        header_bg_height = header_image_height + header_image_padding
-
-        header_image_y = header_bg_y + (header_image_padding/2)
-
         # Factsheet title 
+        title_height = 81 # 1.125", base Title Height
+
         if publication_series:
             title_height = 99 # 1.375"
-        else:
-            title_height = 81 # 1.125"
 
         if desc.strip() and not description_body:
-            title_height = title_height + 27  # 0.375"
+            title_height = title_height + 32  # 0.4375"
 
         # Penn State/Extension Footer Image
+        footer_image_width = 222.0 # 72 points/inch * 3.125"
         footer_image = self.site.portal_skins.agcommon_images['extension-factsheet-footer.png']
-        footer_image_height = (doc.width/footer_image.width)*footer_image.height
+        footer_image_height = footer_image_width*(1.0*footer_image.height/footer_image.width)
 
         # Header and footer on first page
         def header_footer(canvas,doc):
             canvas.saveState()
-            canvas.setStrokeColorRGB(*header_rgb)
-            canvas.setFillColorRGB(*header_rgb)
-            canvas.rect(doc.leftMargin, header_bg_y, doc.width, header_bg_height,fill=1)
-            canvas.setStrokeColorRGB(0,0,0)
-
-            # Background bounding box
-            canvas.line(doc.leftMargin, doc.height+header_image_height-title_height-element_padding, doc.width+doc.leftMargin, doc.height+header_image_height-title_height-element_padding)
-
-            # Extension logo
-            canvas.drawImage(getImage(header_image, scale=False, reader=True), header_image_x, header_image_y, width=header_image_width, height=header_image_height, preserveAspectRatio=True, mask='auto')
 
             # Footer
-            canvas.drawImage(getImage(footer_image, scale=False, reader=True), doc.leftMargin, doc.bottomMargin, width=doc.width, height=footer_image_height, preserveAspectRatio=True, mask='auto')
+            canvas.drawImage(getImage(footer_image, scale=False, reader=True), doc.leftMargin+element_padding, 72.0/2, width=footer_image_width, height=footer_image_height, preserveAspectRatio=True, mask='auto')
 
             canvas.restoreState()
 
@@ -716,24 +708,28 @@ class FactsheetPDFView(FolderView):
         def footer(canvas,doc):
             canvas.saveState()
             canvas.setFont('Times-Roman',9)
-            canvas.drawString(margin, 36, "Page %d" % doc.page)
+            canvas.drawString(margin, 24, "Page %d" % doc.page)
             canvas.setFont('Times-Roman',9)
-            canvas.drawRightString(doc.width+margin+element_padding, 36, title)
+            canvas.drawRightString(doc.width+margin+element_padding, 24, title)
             canvas.restoreState()
 
         #Two Columns For First (title) page
-        title_y = doc.height-title_height
-        title_column_y = doc.bottomMargin+footer_image_height + 6
+        top_padding = 72.0*0.1875   # Additional space on top hardcoded
+
+        title_y = doc.bottomMargin + doc.height - title_height - top_padding        
+
+        title_column_y = doc.bottomMargin+footer_image_height+element_padding
+
         title_column_height = title_y - title_column_y
 
-        title_frame_title = Frame(doc.leftMargin, title_y, doc.width, title_height, id='title_title')
+        title_frame_title = Frame(doc.leftMargin, title_y, doc.width, title_height, id='title_title', showBoundary=showBoundary)
 
         title_frames = [title_frame_title]
 
         for i in range(0,column_count):
             lm = doc.leftMargin + i * (doc.width/column_count+element_padding)
             w = doc.width/column_count-element_padding
-            title_frame = Frame(lm, title_column_y, w, title_column_height, id='title_col%d' % i)
+            title_frame = Frame(lm, title_column_y, w, title_column_height, id='title_col%d' % i, showBoundary=showBoundary)
             title_frames.append(title_frame)
 
         #Two Columns For remaining page
@@ -743,7 +739,7 @@ class FactsheetPDFView(FolderView):
         for i in range(0,column_count):
             lm = doc.leftMargin + i * (doc.width/column_count+element_padding)
             w = doc.width/column_count-element_padding
-            other_frame = Frame(lm, doc.bottomMargin, w, doc.height, id='other_col%d' % i)
+            other_frame = Frame(lm, doc.bottomMargin, w, doc.height, id='other_col%d' % i, showBoundary=showBoundary)
             other_frames.append(other_frame)
 
         title_template = PageTemplate(id="title_template", frames=title_frames,onPage=header_footer)
@@ -910,11 +906,11 @@ class FactsheetPDFView(FolderView):
         # Choose which statement
         aa_statement = """Penn State is an equal opportunity, affirmative action employer, and is committed to providing employment opportunities to all qualified applicants without regard to race, color, religion, age, sex, sexual orientation, gender identity, national origin, disability or protected veteran status."""
         
-        statement_text = ("""<b>Penn State College of Agricultural Sciences research and extension programs are funded in part by Pennsylvania counties, the Commonwealth of Pennsylvania, and the U.S. Department of Agriculture.</b>
+        statement_text = ("""Penn State College of Agricultural Sciences research and extension programs are funded in part by Pennsylvania counties, the Commonwealth of Pennsylvania, and the U.S. Department of Agriculture.
 
-        Where trade names appear, no discrimination is intended, and no endorsement by Penn State Cooperative Extension is implied.
+        Where trade names appear, no discrimination is intended, and no endorsement by Penn State Extension is implied.
 
-        This publication is available in alternative media on request.
+        <b>This publication is available in alternative media on request.</b>
 
         %s
 
