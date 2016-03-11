@@ -177,8 +177,7 @@ class FactsheetPDFView(FolderView):
                 mailHost = self.context.MailHost
         
                 for mTo in emailUsers:
-                    continue
-                    #mailHost.secureSend(mMsg.encode('utf-8'), mto=mTo, mfrom=mFrom, subject=mSubj, subtype='html')
+                    mailHost.secureSend(mMsg.encode('utf-8'), mto=mTo, mfrom=mFrom, subject=mSubj, subtype='html')
     
                 # Return error message
                 return "<h1>Error</h1><p>Sorry, an error has occurred.</p>"
