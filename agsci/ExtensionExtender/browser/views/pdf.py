@@ -151,7 +151,8 @@ class FactsheetPDFView(FolderView):
     def anonymous(self):
         return self.portal_state.anonymous()
 
-    def __call__(self):
+    def getFilename(self):
+
         # Use the publication code as the filename, if it exists.  Otherwise,
         # use the plone id
 
@@ -159,7 +160,11 @@ class FactsheetPDFView(FolderView):
 
         if not filename:
             filename = self.context.getId()
+        
+        return '%s.pdf' % filename
 
+    def __call__(self):
+    
         # If we're an anonymous user, and createPDF errors, send an email, and
         # return a boring and unhelpful error message.  If we're logged in, let
         # the error happen.
@@ -188,7 +193,7 @@ class FactsheetPDFView(FolderView):
 
 
         self.request.response.setHeader('Content-Type', 'application/pdf')
-        self.request.response.setHeader('Content-Disposition', 'attachment; filename="%s.pdf"' % filename)
+        self.request.response.setHeader('Content-Disposition', 'attachment; filename="%s"' % self.getFilename())
 
         return pdf
 
