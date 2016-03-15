@@ -24,7 +24,7 @@ from reportlab.platypus.tableofcontents import TableOfContents
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.lib.utils import ImageReader
-from reportlab.lib.colors import Color
+from reportlab.lib.colors import Color, HexColor
 from reportlab.rl_config import _FUZZ
 from reportlab.lib.enums import TA_LEFT, TA_RIGHT, TA_CENTER
 
@@ -56,7 +56,7 @@ class ImageFigure(ImageFigureBase, Image):
         FlexFigure.__init__(self, w*scaleFactor, h*scaleFactor, caption, background)
         self.border=0
         self.captionFont='Helvetica'
-        self.captionTextColor='gray'
+        self.captionTextColor=HexColor('#717171')
         self.captionSize=9
         self.scaleFactor = self._scaleFactor = scaleFactor
         self.vAlign = 'TOP'
@@ -271,9 +271,9 @@ class FactsheetPDFView(FolderView):
                 rowspan  = int(cell.get('rowspan', 1))
                 return (colspan, rowspan)
 
-            th_bg = Color(0.8,0.8,0.8)
-            th_text = Color(0,0,0)
-            grid = Color(0.6,0.6,0.6)
+            th_bg = HexColor('#CCCCCC')
+            th_text = HexColor('#000000')
+            grid = HexColor('#999999')
 
             table_data = []
             table_style = []
@@ -441,18 +441,11 @@ class FactsheetPDFView(FolderView):
         # Main body of create PDF
         # -------------------------------------------------------------------------
 
-
         # Get document attributes
 
         title = self.context.Title()
         desc = self.context.Description()
         text = self.context.getText()
-
-        # Determine whether to push description into body text
-        description_body = False
-
-        if hasattr(self.context, 'extension_publication_description_body') and self.context.extension_publication_description_body:
-            description_body = True
 
         # Number of columns
         column_count = 2
@@ -478,10 +471,10 @@ class FactsheetPDFView(FolderView):
         #header_rgb = (0.42,0.56,0.07)
         #header_rgb = (0.12,0.18,0.30) # Blue
         #header_rgb = (0.33,0.57,0.31) # Green (too light)
-        header_rgb = (0.30,0.51,0.28) # Green (dark enough)
+        header_rgb = HexColor('#4B7D45') # Green (dark enough)
         
         # Callout Colors
-        callout_background_rgb = (0.95, 0.95, 0.95)
+        callout_background_rgb = HexColor('#F6F6F6')
 
         # Styles
 
@@ -491,23 +484,22 @@ class FactsheetPDFView(FolderView):
         styles['Normal'].spaceAfter = 6
         styles['Normal'].fontName = 'Times-Roman'
 
-        series_heading = ParagraphStyle('Series')
-        series_heading.spaceBefore = 2
-        series_heading.spaceAfter = 12
-        series_heading.fontSize = 25
-        series_heading.textColor = header_rgb
-        series_heading.leading = 29
-        series_heading.fontName = 'Helvetica-Bold'
-
-        styles['Heading1'].fontSize = 16
-        styles['Heading1'].fontName = 'Helvetica'
-        styles['Heading1'].leading = 20
-        styles['Heading1'].spaceBefore = 6
-        styles['Heading1'].spaceAfter = 8
-        styles['Heading1'].backColor = header_rgb
-        styles['Heading1'].textColor = (1,1,1)
-        styles['Heading1'].borderPadding = (2,0,4,5) # 3px left border
-        styles['Heading1'].leftIndent = 5        
+        # Series Heading
+        styles.add(ParagraphStyle('SeriesHeading'))
+        styles['SeriesHeading'].spaceBefore = 0
+        styles['SeriesHeading'].spaceAfter = 2
+        styles['SeriesHeading'].fontSize = 10
+        styles['SeriesHeading'].textColor = (0,0,0)
+        styles['SeriesHeading'].leading = 13
+        styles['SeriesHeading'].fontName = 'Helvetica-Bold'
+        styles['SeriesHeading'].textTransform = 'uppercase'
+        
+        styles['Heading1'].fontSize = 25
+        styles['Heading1'].fontName = 'Helvetica-Bold'
+        styles['Heading1'].leading = 29
+        styles['Heading1'].spaceBefore = 2
+        styles['Heading1'].spaceAfter = 12
+        styles['Heading1'].textColor = header_rgb     
 
         styles['Heading2'].allowWidows = 0
         styles['Heading2'].fontName = 'Helvetica-Bold'
@@ -566,8 +558,8 @@ class FactsheetPDFView(FolderView):
 
         discreet = ParagraphStyle('Discreet')
         discreet.fontSize = 9
-        discreet.textColor = 'gray'
-        discreet.spaceAfter = 8
+        discreet.textColor = HexColor('#717171')
+        discreet.spaceAfter = 12
         discreet.spaceBefore = 1
 
         callout = ParagraphStyle('Callout')
@@ -589,15 +581,11 @@ class FactsheetPDFView(FolderView):
         statement.leading = 10
 
         description = ParagraphStyle('Description')
-        description.fontSize = 14
         description.spaceBefore = 6
         description.spaceAfter = 8
-        description.leading = 17
-
-        if description_body:
-            description.fontSize = 11
-            description.fontName = 'Helvetica-Bold'
-            description.leading = 13
+        description.fontSize = 11
+        description.fontName = 'Helvetica-Bold'
+        description.leading = 13
 
         padded_image = ParagraphStyle('PaddedImage')
         padded_image.spaceBefore = 12
@@ -686,13 +674,23 @@ class FactsheetPDFView(FolderView):
         extension_url_image_width = 0.5*max_image_width
 
         # Factsheet title 
-        title_height = 81 # 1.125", base Title Height
-
+        title_lines = 3
+        publication_series_height = 0
+                
         if publication_series:
-            title_height = 99 # 1.375"
+            # If series heading, only 2 title lines
+            title_lines = 2
 
-        if desc.strip() and not description_body:
-            title_height = title_height + 32  # 0.4375"
+            # One line for the series heading
+            publication_series_height = styles['SeriesHeading'].spaceBefore + \
+                                        styles['SeriesHeading'].spaceAfter + \
+                                        styles['SeriesHeading'].leading 
+
+        title_height = styles['Heading1'].spaceBefore + \
+                       styles['Heading1'].spaceAfter + \
+                       (title_lines * styles['Heading1'].leading) + \
+                       publication_series_height + element_padding
+
 
         # Penn State/Extension Footer Image
         footer_image_width = 222.0 # 72 points/inch * 3.125"
@@ -702,6 +700,11 @@ class FactsheetPDFView(FolderView):
         # Header and footer on first page
         def header_footer(canvas,doc):
             canvas.saveState()
+
+            # Line under Title
+            canvas.setStrokeColorRGB(0,0,0)
+            line_y=doc.bottomMargin+doc.height-title_height
+            canvas.line(doc.leftMargin+element_padding, line_y, doc.width+doc.leftMargin-element_padding, line_y)
 
             # Footer
             canvas.drawImage(getImage(footer_image, scale=False, reader=True), doc.leftMargin+element_padding, 72.0/2, width=footer_image_width, height=footer_image_height, preserveAspectRatio=True, mask='auto')
@@ -718,9 +721,8 @@ class FactsheetPDFView(FolderView):
             canvas.restoreState()
 
         #Two Columns For First (title) page
-        top_padding = 72.0*0.1875   # Additional space on top hardcoded
 
-        title_y = doc.bottomMargin + doc.height - title_height - top_padding        
+        title_y = doc.bottomMargin + doc.height - title_height        
 
         title_column_y = doc.bottomMargin+footer_image_height+element_padding
 
@@ -767,16 +769,15 @@ class FactsheetPDFView(FolderView):
         # flag is set.
 
         if publication_series:
-            pdf.append(Paragraph(publication_series, series_heading))
+            pdf.append(Paragraph(publication_series, styles['SeriesHeading']))
 
         pdf.append(Paragraph(title, styles["Heading1"]))
 
-        if description_body:
-            pdf.append(FrameBreak())
+        # Move to next frame
+        pdf.append(FrameBreak())
+
+        if description:
             pdf.append(Paragraph(desc, description))
-        else:
-            pdf.append(Paragraph(desc, description))
-            pdf.append(FrameBreak())
 
         # If we're a news item, append the date
         if self.context.portal_type in ['News Item']:
