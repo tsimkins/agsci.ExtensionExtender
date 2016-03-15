@@ -371,17 +371,6 @@ class ExtensionContentPublicationExtender(ContentPublicationExtender, ExtensionE
                 vocabulary=([(str(x), str(x)) for x in range(1,4)]),
             ),
     
-            _ExtensionStringField(
-                "extension_publication_description_body",
-                schemata="Publication",
-                required=False,
-                default=False,
-                widget=BooleanWidget(
-                    label=u"Show description in body rather than header.",
-                    description=u"",
-                    condition="python:member.has_role('Manager', object)",
-                ),
-            ),
         ])
 
         fields.extend(super(ExtensionContentPublicationExtender, self).program_fields)
