@@ -53,6 +53,7 @@ class AtlasContentReview(FolderView):
                             'atlas_owner_review',  
                             'atlas_invalid_owner',  
                             'atlas_feedback_review', 
+                            'atlas_ready_review',
                             'atlas_archive_review' 
                         ],
     }
