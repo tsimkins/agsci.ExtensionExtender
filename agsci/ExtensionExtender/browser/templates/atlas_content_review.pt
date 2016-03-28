@@ -111,10 +111,10 @@
 
                                         <span>Change state:</span>
 
-                                        <a 
-                                            tal:repeat="i python: view.getWorkflowActions(brain)"
-                                            tal:attributes="href python:view.addTokenToUrl(i.get('url'));"
-                                            tal:content="python:i.get('name')" />
+                                        <a target="_blank" 
+                                           tal:repeat="i python: view.getWorkflowActions(brain)"
+                                           tal:attributes="href python:view.addTokenToUrl(i.get('url'));"
+                                           tal:content="python:i.get('name')" />
                                             
                                         <a tal:attributes="href string:${brain/getURL}/content_status_history">Advanced</a>
                                             
