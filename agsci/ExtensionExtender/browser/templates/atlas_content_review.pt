@@ -94,10 +94,10 @@
 
                             <div class="atlas-item" tal:define="brain python:i.get('brain');
                                                   needs_review python: view.needsReview(brain)">
-                                <a 
-                                    tal:attributes="href python: view.getItemURL(brain);
-                                                    class python: view.getReviewStateClass(brain);"
-                                    tal:omit-tag="not:needs_review"
+                                <a target="_blank"
+                                   tal:attributes="href python: view.getItemURL(brain);
+                                                   class python: view.getReviewStateClass(brain);"
+                                   tal:omit-tag="not:needs_review"
                                     ><strong tal:content="brain/Title" /></a> 
                                 <tal:description 
                                     condition="needs_review">
