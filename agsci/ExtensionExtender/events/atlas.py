@@ -2,7 +2,7 @@ import requests
 
 # Call to external Plone system when content is set to import workflow state
 
-IMPORT_URL = "http://agplonesrv.ag.psu.edu/atlas-test/@@import_article"
+IMPORT_URL = "http://webdev7.agsci.psu.edu/@@import_article"
 
 def onArticleImport(context, event):
 
