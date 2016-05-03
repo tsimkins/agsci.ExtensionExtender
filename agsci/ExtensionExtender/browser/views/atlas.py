@@ -233,14 +233,21 @@ class AtlasContentReview(FolderView):
 
 
     def getSectionPaths(self):
-        
+
+        # If we're called at the root of the Plone site        
         if self.isPloneSite:
 
             site = getSite()
-            return ['/'.join(site[x].getPhysicalPath()) for x in self.sections]
+            
+            # Find main section ids that are in the sections list
+            section_ids = list(set(site.objectIds) & set(self.sections))
+
+            # If we found them, just use those sections
+            if section_ids:
+                return ['/'.join(site[x].getPhysicalPath()) for x in section_ids]
         
-        else:
-            return '/'.join(self.context.getPhysicalPath())
+        # Otherwise, just return the path of the current context
+        return '/'.join(self.context.getPhysicalPath())
 
     @memoize
     def getReviewQueue(self):
