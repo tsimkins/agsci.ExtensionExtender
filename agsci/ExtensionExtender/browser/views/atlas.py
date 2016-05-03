@@ -240,7 +240,7 @@ class AtlasContentReview(FolderView):
             site = getSite()
             
             # Find main section ids that are in the sections list
-            section_ids = list(set(site.objectIds) & set(self.sections))
+            section_ids = list(set(site.objectIds()) & set(self.sections))
 
             # If we found them, just use those sections
             if section_ids:
