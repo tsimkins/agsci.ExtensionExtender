@@ -1,4 +1,5 @@
 from zope.interface import implements, Interface
+from Products.Archetypes.BaseUnit import BaseUnit
 from Products.Five import BrowserView
 from Products.CMFCore.utils import getToolByName
 from Acquisition import aq_acquire, aq_inner
@@ -446,6 +447,12 @@ class FactsheetPDFView(FolderView):
         title = self.context.Title()
         desc = self.context.Description()
         text = self.context.getText()
+        
+        if isinstance(text, BaseUnit):
+            if hasattr(text, 'raw'):
+                text = text.raw
+            else:
+                text = ''
 
         # Number of columns
         column_count = 2
