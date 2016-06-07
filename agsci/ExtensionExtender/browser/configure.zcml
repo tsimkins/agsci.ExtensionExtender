@@ -271,4 +271,13 @@
         permission="zope2.View"
     />
 
+    <browser:page
+        for="*"
+        name="atlas_status_summary"
+        template="templates/atlas_status_summary.pt"
+        class=".views.atlas.AtlasStatusSummary"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+
 </configure>

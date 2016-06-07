@@ -1,0 +1,111 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="plone">
+
+    <body>
+
+    <metal:styleslot fill-slot="style_slot">
+
+    </metal:styleslot>
+
+    <div id="portal-columns" metal:fill-slot="portal-columns">
+
+        <div id="portal-column-content">
+        
+            <div id="content"
+                tal:define="results view/getReviewStateReport;
+                            owner_results view/getReviewStateByOwnerReport">
+
+                <h1 class="documentFirstHeading" tal:content="view/title" />
+
+                <div class="documentDescription">
+                    Summary Report for Atlas Review Process
+                </div>
+                
+                <table class="listing responsive" 
+                    tal:condition="results">
+                    
+                    <thead>
+                        <tr> 
+                            <th>Atlas Review State</th>
+                            <th>Count</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        <tr tal:repeat="i python: results.keys()">
+                            <td>
+                                <a tal:attributes="href string:${context/absolute_url}/@@${i}" tal:content="python: view.view_titles.get(i, 'N/A')" />
+                            </td>
+                            <td tal:content="python: len(results.get(i))" />
+                        </tr>
+                    </tbody>
+                
+                </table>
+                
+                <tal:owner_results 
+                    tal:condition="owner_results"
+                    tal:repeat="view_id python:sorted(owner_results.keys())">
+
+                    <tal:view 
+
+                        define="view_results python:owner_results.get(view_id, '')">
+
+                        <h2 tal:define="view_title python: view.view_titles.get(view_id, 'N/A')"
+                            tal:content="string: Report for ${view_title}" />
+
+                        <table class="listing responsive">
+                            
+                            <thead>
+                                <tr> 
+                                    <th>Owner</th>
+                                    <th>Count</th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                <tr tal:repeat="i python: sorted(view_results.keys())">
+                                    <td tal:define="i_name python: view.getPersonNameById(i)">
+                                        <a 
+                                            tal:attributes="href string:${context/absolute_url}/@@${view_id}/${i}"
+                                            tal:omit-tag="python: i == 'invalid_user'">
+
+                                            <span tal:replace="i_name" /> 
+
+                                            <tal:user_id condition="python: i != 'invalid_user'">
+                                            
+                                                (<span tal:replace="i" />)
+                                                
+                                            </tal:user_id>
+                                        </a>
+                                    </td>
+                                    <td tal:content="python: len(view_results.get(i))" />
+                                </tr>
+                            </tbody>
+
+                        </table>      
+
+                    </tal:view>
+
+                </tal:owner_results >
+                
+                <p tal:condition="not:results">
+                    No results.
+                </p>
+                
+            </div>
+
+        </div>
+
+    </div>
+
+
+    
+
+    </body>
+    
+</html>

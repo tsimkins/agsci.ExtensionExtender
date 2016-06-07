@@ -39,9 +39,19 @@
                 <h1 class="documentFirstHeading" tal:content="view/title" />
                 
                 <div class="atlas-controls">
-                    
+
+                    <tal:reports condition="view/isPowerUser">
+                        <h2 class="atlas-queue">Reports</h2>
+                        
+                        <p>
+                            <a tal:attributes="href string:${context/absolute_url}/@@atlas_status_summary">
+                                Atlas Content Review Summary
+                            </a>
+                        </p>
+                    </tal:reports>
+
                     <h2 class="atlas-queue">Atlas Review Queues</h2>
-                    
+
                     <div class="atlas-review-nav">
                         <ul>
                             <li tal:repeat="i view/navigation_items">
@@ -78,7 +88,7 @@
                     </form>
 
                 </div>
-                
+
                 <div class="documentDescription">
                     Listing of <strong tal:content="review_state_str" /> 
                     Items 
