@@ -531,3 +531,15 @@ class AtlasStatusSummary(AtlasContentReview):
     @property
     def title(self):
         return '%s: %s' % (self.app_title, 'Summary')
+    
+    def getNavPosition(self, item):
+        nav = self.nav_items_by_role.get('Atlas Content Manager', [])
+
+        if item in nav:
+            return nav.index(item)
+        
+        return 99999
+    
+    def getSortedViews(self, v):
+        return sorted(v, key=lambda x: self.getNavPosition(x))
+        

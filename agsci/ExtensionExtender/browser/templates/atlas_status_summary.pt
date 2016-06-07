@@ -37,7 +37,7 @@
                     </thead>
                     
                     <tbody>
-                        <tr tal:repeat="i python: results.keys()">
+                        <tr tal:repeat="i python: view.getSortedViews(results.keys())">
                             <td>
                                 <a tal:attributes="href string:${context/absolute_url}/@@${i}" tal:content="python: view.view_titles.get(i, 'N/A')" />
                             </td>
