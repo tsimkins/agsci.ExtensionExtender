@@ -275,7 +275,7 @@ class AtlasContentReview(FolderView):
     def getFilteredReviewQueue(self, query):
 
         # Excluded ids
-        excluded_ids = ['images', 'files', 'news', 'events', 'photos', 'courses', 'blog']
+        excluded_ids = ['background-images', 'images', 'files', 'news', 'events', 'photos', 'courses', 'blog']
         
         # YYYY or 0M format for years or months
         years = ['%d' % x for x in range(1990,2030)]
