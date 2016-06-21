@@ -269,8 +269,30 @@ class AtlasContentReview(FolderView):
 
         query['portal_type'] = self.content_types
 
-        return self.portal_catalog.searchResults(query)
+        return self.getFilteredReviewQueue(query)
 
+    # Filters out items that should not be reviewed by getId or other criteria.
+    def getFilteredReviewQueue(self, query):
+
+        # Excluded ids
+        excluded_ids = ['images', 'files', 'news', 'events', 'photos', 'courses', 'blog']
+        
+        # YYYY or 0M format for years or months
+        years = ['%d' % x for x in range(1990,2030)]
+        months = ['%02d' % x for x in range(1,13)]
+
+        # Extend excluded_ids list with auto-generated ones
+        excluded_ids.extend(years)
+        excluded_ids.extend(months)
+
+        # Run the query
+        results = self.portal_catalog.searchResults(query)
+
+        # Check for existence of brain id in excluded_ids        
+        def isStructuralItem(r):
+            return r.getId in excluded_ids
+        
+        return filter(lambda x: not isStructuralItem(x), results)
 
     @memoize
     def getValidPeople(self):
@@ -394,7 +416,7 @@ class AtlasInvalidOwner(AtlasWebReview):
 
         query['portal_type'] = self.content_types
 
-        return self.portal_catalog.searchResults(query)
+        return self.getFilteredReviewQueue(query)
 
 class BrainHierarchy(object):
 
