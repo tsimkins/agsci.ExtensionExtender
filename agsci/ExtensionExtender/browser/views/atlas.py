@@ -105,12 +105,6 @@ class AtlasContentReview(FolderView):
 
         return ''
 
-    def getItemURL(self, brain=None):
-        if brain:
-            return brain.getURL()
-
-        return None
-
     def getNavigationItemData(self, view_name):
 
         url = '%s/@@%s' % (self.context.absolute_url(), view_name)
