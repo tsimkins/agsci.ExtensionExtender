@@ -30,10 +30,11 @@ class AtlasContentReview(FolderView):
     view_titles = {
         'atlas_owner_review' : 'Owner Review',
         'atlas_web_review' : 'Web Team Review',
+        'atlas_on_hold_review' : 'On Hold',
         'atlas_ready_review' : 'Ready Content',
         'atlas_feedback_review' : 'Owner Feedback',
         'atlas_invalid_owner' : 'Invalid Owners',
-        'atlas_pre_review' : 'Preliminary Review',
+        'atlas_pre_review' : 'Pre-Review',
         'atlas_archive_review' : 'Archived Content',
     }
 
@@ -47,7 +48,7 @@ class AtlasContentReview(FolderView):
                             'atlas_owner_review', 'atlas_pre_review',
                             'atlas_invalid_owner', 'atlas_web_review',
                             'atlas_feedback_review', 'atlas_ready_review',
-                            'atlas_archive_review'
+                            'atlas_archive_review', 'atlas_on_hold_review',
                         ],
         'Atlas Content Manager' : [
                             'atlas_owner_review',
@@ -337,6 +338,10 @@ class AtlasWebReview(AtlasContentReview):
 
     review_state = ["atlas-web-team-review", ]
 
+class AtlasOnHoldReview(AtlasWebReview):
+
+    review_state = ["atlas-on-hold", ]
+
 
 class AtlasPreReview(AtlasWebReview):
 
@@ -479,6 +484,7 @@ class AtlasStatusSummary(AtlasContentReview):
         'atlas-import-article' : 'atlas_imported_review', # Does not exist
         'atlas-pending' : 'atlas_owner_review',
         'atlas-ready' : 'atlas_ready_review',
+        'atlas-on-hold' : 'atlas_on_hold_review',
         'atlas-web-team-review' : 'atlas_web_review',
     }
 

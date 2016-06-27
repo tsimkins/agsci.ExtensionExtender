@@ -228,6 +228,15 @@
     
     <browser:page
         for="*"
+        name="atlas_on_hold_review"
+        template="templates/atlas_content_review.pt"
+        class=".views.atlas.AtlasOnHoldReview"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+    
+    <browser:page
+        for="*"
         name="atlas_ready_review"
         template="templates/atlas_content_review.pt"
         class=".views.atlas.AtlasReadyReview"
