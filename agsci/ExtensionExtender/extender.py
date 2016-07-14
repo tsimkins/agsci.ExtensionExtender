@@ -267,18 +267,7 @@ class ExtensionExtender(object):
                 default=False,
                 widget=BooleanWidget(
                     label=u"Include in Extension Publications listing?",
-                    description=u"",
-                    condition="python:member.has_role('Manager', object)",
-                ),
-            ),
-            _ExtensionBooleanField(
-                "extension_publication_contact_pdc",
-                schemata="Publication",
-                required=False,
-                default=False,
-                widget=BooleanWidget(
-                    label=u"Contact PDC",
-                    description=u"",
+                    description=u"This is only for publications that are orderable through the PDC.",
                     condition="python:member.has_role('Manager', object)",
                 ),
             ),
