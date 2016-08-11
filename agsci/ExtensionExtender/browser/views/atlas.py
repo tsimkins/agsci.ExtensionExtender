@@ -25,7 +25,7 @@ class AtlasContentReview(FolderView):
     sections = ['animals', 'plants', 'pests', 'food', 'health',
                 'natural-resources', 'youth', 'community', 'business']
 
-    content_types = ['PhotoFolder', 'Food', 'Link', 'File', 'Folder', 'Document',]
+    content_types = ['News Item', 'PhotoFolder', 'Food', 'Link', 'File', 'Folder', 'Document',]
 
     view_titles = {
         'atlas_owner_review' : 'Owner Review',
@@ -347,6 +347,8 @@ class AtlasPreReview(AtlasWebReview):
 
     review_state = ["published", ]
 
+    content_types = ['PhotoFolder', 'Food', 'Link', 'File', 'Folder', 'Document',]
+
     show_actions = True
 
 
@@ -362,7 +364,7 @@ class AtlasArchiveReview(AtlasWebReview):
 
 class AtlasInvalidOwner(AtlasWebReview):
 
-    review_state = ['published', 'atlas-pending', 'atlas-web-team-review', 'atlas-feedback', 'atlas-ready']
+    review_state = ['atlas-pending', 'atlas-web-team-review', 'atlas-feedback', 'atlas-ready']
 
     show_actions = True
 
