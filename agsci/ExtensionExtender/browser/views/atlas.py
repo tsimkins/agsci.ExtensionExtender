@@ -368,7 +368,7 @@ class AtlasInvalidOwner(AtlasWebReview):
 
     def getItemURL(self, brain=None):
         if brain:
-            url = super(AtlasInvalidOwner, self).getItemURL(brain=brain)
+            url = super(AtlasInvalidOwner, self).getItemURL(brain)
             url = addTokenToUrl('%s/edit' % url)
             return '%s#fieldsetlegend-ownership' % url
 
