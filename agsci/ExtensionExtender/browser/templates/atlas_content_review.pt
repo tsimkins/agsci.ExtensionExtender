@@ -77,7 +77,7 @@
                             <option value="">Select an owner to filter by...</option>
                             <option 
                                 tal:repeat="i view/getReviewQueueOwners"
-                                tal:content="i"
+                                tal:content="python: view.getUserName(i)"
                                 tal:attributes="value i;
                                                 selected python:(view.getUserId() == i) and 'selected' or ''"
                                 >
@@ -111,7 +111,7 @@
                                     ><strong tal:content="brain/Title" /></a> 
                                 <tal:description 
                                     condition="needs_review">
-                                    <div class="discreet">[<tal:type replace="brain/portal_type" />, <tal:type replace="brain/Creator" />]</div>
+                                    <div class="discreet">[<tal:type replace="brain/portal_type" />, <tal:type replace="python: view.getUserName(brain)" />]</div>
                                     <div class="description" 
                                          tal:content="brain/Description" 
                                          tal:condition="brain/Description"/>

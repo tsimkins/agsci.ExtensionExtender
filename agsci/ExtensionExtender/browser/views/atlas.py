@@ -8,6 +8,7 @@ from zope.interface import implements, Interface, implementer
 from zope.publisher.interfaces import IPublishTraverse
 from zope.component.hooks import getSite
 from Products.CMFPlone.interfaces import IPloneSiteRoot
+from Products.ZCatalog.CatalogBrains import AbstractCatalogBrain
 
 try:
     from plone.protect.utils import addTokenToUrl
@@ -167,6 +168,28 @@ class AtlasContentReview(FolderView):
 
         return None
 
+    # Given either a brain or a string, get the user name from the uesr id
+    @memoize
+    def getUserName(self, v):
+        
+        if isinstance(v, AbstractCatalogBrain):
+            user_id = v.Creator
+        
+        else:
+            user_id = v
+        
+        user_name = self.getAllUsers().get(user_id, None)
+        
+        if user_name:
+            return "%s (%s)" % (user_name, user_id)
+        
+        return user_id
+        
+    @memoize
+    def getAllUsers(self):
+        results = self.portal_catalog.searchResults({'portal_type' : 'FSDPerson'})
+        
+        return dict(map(lambda x: (x.getId, x.Title), results))
 
     @memoize
     def getAtlasRole(self):
@@ -326,7 +349,9 @@ class AtlasContentReview(FolderView):
 
 
     def getReviewQueueOwners(self):
-        return set([x.Creator for x in self.getReviewQueue()])
+        owners = list(set([x.Creator for x in self.getReviewQueue()]))
+        owners.sort(key=lambda x: self.getUserName(x))
+        return owners
 
 
 class AtlasFeedbackReview(AtlasContentReview):
