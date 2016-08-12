@@ -534,7 +534,7 @@ class AtlasStatusSummary(AtlasContentReview):
 
         query['portal_type'] = self.content_types
 
-        return self.portal_catalog.searchResults(query)
+        return self.getFilteredReviewQueue(query)
 
 
     def getReviewStateReport(self):
