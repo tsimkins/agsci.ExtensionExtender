@@ -24,6 +24,9 @@ def onArticleImport(context, event):
 
             if data.get('external_url', None):
                 return True
+        
+        else:
+            raise Exception('%d: %s' % (response.code, response.text))
     
     return False
 
