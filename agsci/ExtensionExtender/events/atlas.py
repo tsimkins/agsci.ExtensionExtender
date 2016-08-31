@@ -26,7 +26,7 @@ def onArticleImport(context, event):
                 return True
         
         else:
-            raise Exception('%d: %s' % (response.code, response.text))
+            raise Exception('%d: %s' % (response.status_code, response.text))
     
     return False
 
