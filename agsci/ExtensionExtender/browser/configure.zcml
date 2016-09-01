@@ -282,6 +282,15 @@
 
     <browser:page
         for="*"
+        name="atlas_imported_review"
+        template="templates/atlas_content_review.pt"
+        class=".views.atlas.AtlasImportedReview"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+    />
+
+    <browser:page
+        for="*"
         name="atlas_status_summary"
         template="templates/atlas_status_summary.pt"
         class=".views.atlas.AtlasStatusSummary"

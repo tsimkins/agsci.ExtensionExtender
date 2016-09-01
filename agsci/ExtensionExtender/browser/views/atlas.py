@@ -32,16 +32,18 @@ class AtlasContentReview(FolderView):
         'atlas_owner_review' : 'Owner Review',
         'atlas_web_review' : 'Web Team Review',
         'atlas_on_hold_review' : 'On Hold',
-        'atlas_ready_review' : 'Ready Content',
+        'atlas_ready_review' : 'Ready',
         'atlas_feedback_review' : 'Owner Feedback',
         'atlas_invalid_owner' : 'Invalid Owners',
         'atlas_pre_review' : 'Pre-Review',
-        'atlas_archive_review' : 'Archived Content',
+        'atlas_archive_review' : 'Archived',
+        'atlas_imported_review' : 'Imported',
     }
 
     default_nav = [
                     'atlas_owner_review', 'atlas_feedback_review',
-                    'atlas_ready_review', 'atlas_archive_review'
+                    'atlas_ready_review', 'atlas_archive_review',
+                    'atlas_imported_review'
                   ]
 
     nav_items_by_role = {
@@ -50,6 +52,7 @@ class AtlasContentReview(FolderView):
                             'atlas_invalid_owner', 'atlas_web_review',
                             'atlas_feedback_review', 'atlas_ready_review',
                             'atlas_archive_review', 'atlas_on_hold_review',
+                            'atlas_imported_review',
                         ],
         'Atlas Content Manager' : [
                             'atlas_owner_review',
@@ -57,6 +60,7 @@ class AtlasContentReview(FolderView):
                             'atlas_feedback_review',
                             'atlas_ready_review',
                             'atlas_archive_review'
+                            'atlas_imported_review',
                         ],
     }
 
@@ -171,24 +175,24 @@ class AtlasContentReview(FolderView):
     # Given either a brain or a string, get the user name from the uesr id
     @memoize
     def getUserName(self, v):
-        
+
         if isinstance(v, AbstractCatalogBrain):
             user_id = v.Creator
-        
+
         else:
             user_id = v
-        
+
         user_name = self.getAllUsers().get(user_id, None)
-        
+
         if user_name:
             return "%s (%s)" % (user_name, user_id)
-        
+
         return user_id
-        
+
     @memoize
     def getAllUsers(self):
         results = self.portal_catalog.searchResults({'portal_type' : 'FSDPerson'})
-        
+
         return dict(map(lambda x: (x.getId, x.Title), results))
 
     @memoize
@@ -293,10 +297,10 @@ class AtlasContentReview(FolderView):
     def getFilteredReviewQueue(self, query):
 
         # Excluded ids
-        excluded_ids = ['background-images', 'images', 'files', 'news', 
-                        'events', 'photos', 'courses', 'blog', 'spotlight', 
+        excluded_ids = ['background-images', 'images', 'files', 'news',
+                        'events', 'photos', 'courses', 'blog', 'spotlight',
                         'documents', 'directory', 'contact', 'articles']
-        
+
         # YYYY or 0M format for years or months
         years = ['%d' % x for x in range(1990,2030)]
         months = ['%02d' % x for x in range(1,13)]
@@ -308,10 +312,10 @@ class AtlasContentReview(FolderView):
         # Run the query
         results = self.portal_catalog.searchResults(query)
 
-        # Check for existence of brain id in excluded_ids        
+        # Check for existence of brain id in excluded_ids
         def isStructuralItem(r):
             return r.getId in excluded_ids
-        
+
         return filter(lambda x: not isStructuralItem(x), results)
 
     @memoize
@@ -385,6 +389,11 @@ class AtlasReadyReview(AtlasWebReview):
 class AtlasArchiveReview(AtlasWebReview):
 
     review_state = ["atlas-archive", ]
+
+
+class AtlasImportedReview(AtlasWebReview):
+
+    review_state = ["atlas-import-article", ]
 
 
 class AtlasInvalidOwner(AtlasWebReview):
@@ -582,15 +591,15 @@ class AtlasStatusSummary(AtlasContentReview):
     @property
     def title(self):
         return '%s: %s' % (self.app_title, 'Summary')
-    
+
     def getNavPosition(self, item):
         nav = self.nav_items_by_role.get('Atlas Content Manager', [])
 
         if item in nav:
             return nav.index(item)
-        
+
         return 99999
-    
+
     def getSortedViews(self, v):
         return sorted(v, key=lambda x: self.getNavPosition(x))
-        
+
