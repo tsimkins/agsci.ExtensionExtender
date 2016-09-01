@@ -298,4 +298,14 @@
         permission="zope2.View"
     />
 
+    <!-- Viewlet -->
+    <browser:viewlet
+        name="agsci.extension.new_location"
+        manager="plone.app.layout.viewlets.interfaces.IBelowContentTitle"
+        class=".viewlets.NewLocationViewlet"
+        layer="Products.agCommon.browser.interfaces.IThemeSpecific"
+        permission="zope2.View"
+        template="templates/new_location.pt"
+        />
+
 </configure>

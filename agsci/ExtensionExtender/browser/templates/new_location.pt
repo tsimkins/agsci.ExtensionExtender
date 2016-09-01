@@ -1,0 +1,12 @@
+<tal:show condition="view/show">
+
+    <dl class="portalMessage info">
+        <dt>Info</dt>
+        <dd>
+            This content has been 
+            <a tal:attributes="href view/new_url">migrated to the new content 
+            management system</a>.
+        </dd>
+    </dl>
+
+</tal:show>
