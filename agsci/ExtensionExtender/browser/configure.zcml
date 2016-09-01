@@ -301,7 +301,7 @@
     <!-- Viewlet -->
     <browser:viewlet
         name="agsci.extension.new_location"
-        manager="plone.app.layout.viewlets.interfaces.IBelowContentTitle"
+        manager="plone.app.layout.viewlets.interfaces.IAboveContentTitle"
         class=".viewlets.NewLocationViewlet"
         layer="Products.agCommon.browser.interfaces.IThemeSpecific"
         permission="zope2.View"
