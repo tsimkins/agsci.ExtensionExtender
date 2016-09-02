@@ -517,7 +517,8 @@ class AtlasStatusSummary(AtlasContentReview):
     review_state_data = {
         'atlas-archive' : 'atlas_archive_review',
         'atlas-feedback' : 'atlas_feedback_review',
-        'atlas-import-article' : 'atlas_imported_review', # Does not exist
+        'atlas-import-article' : 'atlas_imported_review',
+        'atlas-import-video' : 'atlas_imported_review',
         'atlas-pending' : 'atlas_owner_review',
         'atlas-ready' : 'atlas_ready_review',
         'atlas-on-hold' : 'atlas_on_hold_review',
