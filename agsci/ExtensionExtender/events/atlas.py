@@ -2,31 +2,42 @@ import requests
 
 # Call to external Plone system when content is set to import workflow state
 
-IMPORT_URL = "http://cms.extension.psu.edu/@@import_article"
+# Configure hostname
+HOSTNAME="cms.extension.psu.edu"
 
-def onArticleImport(context, event):
+# Configure workflow name to import URL
+workflow_to_import_url = {
+    'z6_atlas-import-article' : "http://%s/@@import_article" % HOSTNAME,
+    'z6_atlas-import-video' : "http://%s/@@import_video" % HOSTNAME,
+}
 
-    if event.action in ['z6_atlas-import-article', ]:
+def importContent(context, event):
 
-        # Get UID from item        
-        uid = context.UID()
+    # Look up import URL based on event action
+    import_url = workflow_to_import_url.get(event.action, None)
 
-        # POST data to Jitterbit
-        post_data = {'UID' : uid}
-        response = requests.post(IMPORT_URL, data=post_data)
+    # Return if we didn't find one
+    if not import_url:
+        return False
 
-        # Response, status etc
-        response.text
-        response.status_code
-        
-        if response.status_code == 200:
-            data = response.json()
+    # Get UID from item
+    uid = context.UID()
 
-            if data.get('external_url', None):
-                return True
-        
-        else:
-            raise Exception('%d: %s' % (response.status_code, response.text))
-    
+    # POST data to Plone
+    post_data = {'UID' : uid}
+    response = requests.post(import_url, data=post_data)
+
+    # Response, status etc
+    response.text
+    response.status_code
+
+    if response.status_code == 200:
+        data = response.json()
+
+        if data.get('external_url', None):
+            return True
+
+    else:
+        raise Exception('%d: %s' % (response.status_code, response.text))
+
     return False
-

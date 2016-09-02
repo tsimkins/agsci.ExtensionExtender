@@ -12,6 +12,6 @@
     <subscriber
         for="Products.ATContentTypes.interfaces.interfaces.IATContentType
              Products.CMFCore.interfaces.IActionSucceededEvent"
-        handler=".atlas.onArticleImport"
+        handler=".atlas.importContent"
         />
 </configure>
