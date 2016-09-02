@@ -393,7 +393,7 @@ class AtlasArchiveReview(AtlasWebReview):
 
 class AtlasImportedReview(AtlasWebReview):
 
-    review_state = ["atlas-import-article", ]
+    review_state = ["atlas-import-article", "atlas-import-video"]
 
 
 class AtlasInvalidOwner(AtlasWebReview):
