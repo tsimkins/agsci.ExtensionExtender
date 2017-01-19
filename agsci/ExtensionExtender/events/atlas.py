@@ -94,9 +94,9 @@ def callImportAPI(context, event):
         data = response.json()
 
         # If the import returned a 200, but doesn't have a value for the
-        # 'external_url' key, raise an exception. This is a basic sanit check.
-        if not data.get('external_url', None):
-            raise Exception('Return from import indicates issue: %s' % repr(json))
+        # 'plone_id' key, raise an exception. This is a basic sanit check.
+        if not data.get('plone_id', None):
+            raise Exception('Return from import indicates issue: %s' % repr(data))
 
     # Raise an exception if the return code is not 200
     else:
