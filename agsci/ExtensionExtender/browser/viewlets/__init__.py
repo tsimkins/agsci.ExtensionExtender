@@ -3,7 +3,13 @@ from Products.CMFCore.utils import getToolByName
 
 class NewLocationViewlet(AgCommonViewlet):
 
-    show_for_review_states = ['atlas-import-article', 'atlas-import-video',]
+    show_for_review_states = [
+                                'atlas-import-article', 
+                                'atlas-import-video',
+                                'atlas-import-workshop-group',
+                                'atlas-import-smart-sheet',
+                             ]
+
     hostname = 'cms.extension.psu.edu'
 
     def new_url(self):
