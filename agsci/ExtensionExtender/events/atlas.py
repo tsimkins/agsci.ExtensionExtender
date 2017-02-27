@@ -11,6 +11,8 @@ HOSTNAME="cms.extension.psu.edu"
 workflow_to_import_url = {
     'z6_atlas-import-article' : "http://%s/@@import_article" % HOSTNAME,
     'z6_atlas-import-video' : "http://%s/@@import_video" % HOSTNAME,
+    'z6_atlas-import-workshop-group' : "http://%s/@@import_workshop_group" % HOSTNAME,
+    'z6_atlas-import-smart-sheet' : "http://%s/@@import_smart_sheet" % HOSTNAME,
 }
 
 def importContent(context, event):
@@ -35,7 +37,7 @@ def importContent(context, event):
     except WorkflowException:
         parent_review_state = None
 
-    if parent_review_state in ['atlas-import-article', 'atlas-import-video']:
+    if parent_review_state in ['atlas-import-article', 'atlas-import-video', 'atlas-import-smart-sheet']:
         return False
 
     # This pushes the content from the current site to the new site via the API
