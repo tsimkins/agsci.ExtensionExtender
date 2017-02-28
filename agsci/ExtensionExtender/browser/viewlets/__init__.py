@@ -8,6 +8,12 @@ class NewLocationViewlet(AgCommonViewlet):
                                 'atlas-import-video',
                                 'atlas-import-workshop-group',
                                 'atlas-import-smart-sheet',
+                                'atlas-import-curriculum',
+                                'atlas-import-online-course',
+                                'atlas-import-webinar',
+                                'atlas-import-workshop',
+                                'atlas-import-news-item',
+                                'atlas-import-publication',
                              ]
 
     hostname = 'cms.extension.psu.edu'
