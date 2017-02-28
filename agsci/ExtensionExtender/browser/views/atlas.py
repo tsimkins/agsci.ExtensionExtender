@@ -398,6 +398,12 @@ class AtlasImportedReview(AtlasWebReview):
                         'atlas-import-video',
                         'atlas-import-workshop-group',
                         'atlas-import-smart-sheet',
+                        'atlas-import-curriculum',
+                        'atlas-import-online-course',
+                        'atlas-import-webinar',
+                        'atlas-import-workshop',
+                        'atlas-import-news-item',
+                        'atlas-import-publication',
                     ]
 
 
@@ -526,6 +532,12 @@ class AtlasStatusSummary(AtlasContentReview):
         'atlas-import-video' : 'atlas_imported_review',
         'atlas-import-workshop-group' : 'atlas_imported_review',
         'atlas-import-smart-sheet' : 'atlas_imported_review',
+        'atlas-import-curriculum' : 'atlas_imported_review',
+        'atlas-import-online-course' : 'atlas_imported_review',
+        'atlas-import-webinar' : 'atlas_imported_review',
+        'atlas-import-workshop' : 'atlas_imported_review',
+        'atlas-import-news-item' : 'atlas_imported_review',
+        'atlas-import-publication' : 'atlas_imported_review',
         'atlas-pending' : 'atlas_owner_review',
         'atlas-ready' : 'atlas_ready_review',
         'atlas-on-hold' : 'atlas_on_hold_review',

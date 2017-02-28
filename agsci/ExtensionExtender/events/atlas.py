@@ -13,6 +13,12 @@ workflow_to_import_url = {
     'z6_atlas-import-video' : "http://%s/@@import_video" % HOSTNAME,
     'z6_atlas-import-workshop-group' : "http://%s/@@import_workshop_group" % HOSTNAME,
     'z6_atlas-import-smart-sheet' : "http://%s/@@import_smart_sheet" % HOSTNAME,
+    'z6_atlas-import-curriculum' : "http://%s/@@import_curriculum" % HOSTNAME,
+    'z6_atlas-import-online-course' : "http://%s/@@import_online_course" % HOSTNAME,
+    'z6_atlas-import-webinar' : "http://%s/@@import_webinar" % HOSTNAME,
+    'z6_atlas-import-workshop' : "http://%s/@@import_workshop" % HOSTNAME,
+    'z6_atlas-import-news-item' : "http://%s/@@import_news_item" % HOSTNAME,
+    'z6_atlas-import-publication' : "http://%s/@@import_publication" % HOSTNAME,
 }
 
 def importContent(context, event):
@@ -37,7 +43,10 @@ def importContent(context, event):
     except WorkflowException:
         parent_review_state = None
 
-    if parent_review_state in ['atlas-import-article', 'atlas-import-video', 'atlas-import-smart-sheet']:
+    if parent_review_state in ['atlas-import-article', 'atlas-import-video', 
+                               'atlas-import-smart-sheet', 'atlas-import-curriculum',
+                               'atlas-import-webinar', 'atlas-import-workshop-group',
+                               'atlas-import-online-course', ]:
         return False
 
     # This pushes the content from the current site to the new site via the API
