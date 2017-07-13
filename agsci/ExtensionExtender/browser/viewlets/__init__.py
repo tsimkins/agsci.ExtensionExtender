@@ -4,16 +4,18 @@ from Products.CMFCore.utils import getToolByName
 class NewLocationViewlet(AgCommonViewlet):
 
     show_for_review_states = [
+                                'atlas-import-app',
                                 'atlas-import-article', 
-                                'atlas-import-video',
-                                'atlas-import-workshop-group',
-                                'atlas-import-smart-sheet',
                                 'atlas-import-curriculum',
-                                'atlas-import-online-course',
-                                'atlas-import-webinar',
-                                'atlas-import-workshop',
                                 'atlas-import-news-item',
-                                'atlas-import-publication',
+                                'atlas-import-online-course',
+                                'atlas-import-publication', 
+                                'atlas-import-smart-sheet',
+                                'atlas-import-video',
+                                'atlas-import-webinar',
+                                'atlas-import-webinar-recording',
+                                'atlas-import-workshop',
+                                'atlas-import-workshop-group',
                              ]
 
     hostname = 'cms.extension.psu.edu'
