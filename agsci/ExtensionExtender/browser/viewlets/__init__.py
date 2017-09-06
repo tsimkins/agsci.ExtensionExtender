@@ -8,6 +8,7 @@ class NewLocationViewlet(AgCommonViewlet):
                                 'atlas-import-article', 
                                 'atlas-import-curriculum',
                                 'atlas-import-news-item',
+                                'atlas-import-noop',
                                 'atlas-import-online-course',
                                 'atlas-import-publication', 
                                 'atlas-import-smart-sheet',
