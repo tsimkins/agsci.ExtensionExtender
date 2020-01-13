@@ -50,9 +50,9 @@ class ImageFigure(ImageFigureBase, Image):
         w, h = self.img.size
 
         if max_image_width > w:
-            scaleFactor = max_image_width/w            
+            scaleFactor = max_image_width/w
         else:
-            scaleFactor = width/w            
+            scaleFactor = width/w
 
         FlexFigure.__init__(self, w*scaleFactor, h*scaleFactor, caption, background)
         self.border=0
@@ -70,15 +70,15 @@ class ImageFigure(ImageFigureBase, Image):
             self.canv.drawInlineImage(self.img, x=-w*self.scaleFactor/2, y=0, width=w*self.scaleFactor, height=h*self.scaleFactor)
         else:
             self.canv.drawInlineImage(self.img, x=0, y=0, width=w*self.scaleFactor, height=h*self.scaleFactor)
-            
+
     def drawCaption(self):
         (w,h) = self.img.size
         self.captionStyle.alignment = TA_LEFT
 
         if self.column_count == 1:
-            self.captionPara.drawOn(self.canv, -w*self.scaleFactor/2, 0)  
+            self.captionPara.drawOn(self.canv, -w*self.scaleFactor/2, 0)
         else:
-            self.captionPara.drawOn(self.canv, 0, 0)  
+            self.captionPara.drawOn(self.canv, 0, 0)
 
 
     @property
@@ -91,8 +91,8 @@ class ImageFigure(ImageFigureBase, Image):
         return self.figureHeight + caption_height
 
     def _restrictSize(self,aW,aH):
-        if self.drawWidth>aW+_FUZZ or self.drawHeight>aH+_FUZZ:   
-            self._oldDrawSize = self.drawWidth, self.drawHeight 
+        if self.drawWidth>aW+_FUZZ or self.drawHeight>aH+_FUZZ:
+            self._oldDrawSize = self.drawWidth, self.drawHeight
             factor = min(float(aW)/self.drawWidth,float(aH)/self.drawHeight)
             self.drawWidth *= factor
             self.drawHeight *= factor
@@ -161,17 +161,17 @@ class FactsheetPDFView(FolderView):
 
         if not filename:
             filename = self.context.getId()
-        
+
         return '%s.pdf' % filename
 
     def __call__(self):
-    
+
         # If we're an anonymous user, and createPDF errors, send an email, and
         # return a boring and unhelpful error message.  If we're logged in, let
         # the error happen.
-        
+
         if self.anonymous:
-        
+
             try:
                 pdf = self.createPDF()
             except:
@@ -181,13 +181,13 @@ class FactsheetPDFView(FolderView):
                 mSubj = "Error auto-generating PDF: %s" % self.context.Title()
                 mMsg = '<p><strong>ERROR:</strong> <a href="%s">%s</a></p>'  % (self.context.absolute_url(), self.context.Title())
                 mailHost = self.context.MailHost
-        
+
                 for mTo in emailUsers:
                     mailHost.secureSend(mMsg.encode('utf-8'), mto=mTo, mfrom=mFrom, subject=mSubj, subtype='html')
-    
+
                 # Return error message
                 return "<h1>Error</h1><p>Sorry, an error has occurred.</p>"
-                
+
         else:
 
             pdf = self.createPDF()
@@ -238,8 +238,8 @@ class FactsheetPDFView(FolderView):
                 if isinstance(i, Tag):
                     item_type = i.name
                     if item_type in ['b', 'strong', 'i', 'em', 'super', 'sub', 'a']:
-                        for a in ['class', 'title', 'rel']:
-                            if i.get(a):
+                        for a in ['class', 'title', 'rel', 'target']:
+                            if i.has_key(a):
                                 del i[a]
                         if item_type == 'strong':
                             i.name = 'b'
@@ -316,7 +316,7 @@ class FactsheetPDFView(FolderView):
                     p.hAlign = td_align
 
                     table_row.append(p)
-                   
+
                     (colspan, rowspan) = getCellSpan(i)
                     c_max = c_index + colspan - 1
                     r_max = r_index + rowspan - 1
@@ -393,7 +393,7 @@ class FactsheetPDFView(FolderView):
 
                         if src.startswith('/'):
                             src = src.replace('/', '', 1)
-                            
+
                         try:
                             img_obj = self.site.restrictedTraverse(str(src))
                         except KeyError:
@@ -447,7 +447,7 @@ class FactsheetPDFView(FolderView):
         title = self.context.Title()
         desc = self.context.Description()
         text = self.context.getText()
-        
+
         if isinstance(text, BaseUnit):
             if hasattr(text, 'raw'):
                 text = text.raw
@@ -479,7 +479,7 @@ class FactsheetPDFView(FolderView):
         #header_rgb = (0.12,0.18,0.30) # Blue
         #header_rgb = (0.33,0.57,0.31) # Green (too light)
         header_rgb = HexColor('#4B7D45') # Green (dark enough)
-        
+
         # Callout Colors
         callout_background_rgb = HexColor('#F6F6F6')
 
@@ -500,13 +500,13 @@ class FactsheetPDFView(FolderView):
         styles['SeriesHeading'].leading = 13
         styles['SeriesHeading'].fontName = 'Helvetica-Bold'
         styles['SeriesHeading'].textTransform = 'uppercase'
-        
+
         styles['Heading1'].fontSize = 25
         styles['Heading1'].fontName = 'Helvetica-Bold'
         styles['Heading1'].leading = 29
         styles['Heading1'].spaceBefore = 2
         styles['Heading1'].spaceAfter = 12
-        styles['Heading1'].textColor = header_rgb     
+        styles['Heading1'].textColor = header_rgb
 
         styles['Heading2'].allowWidows = 0
         styles['Heading2'].fontName = 'Helvetica-Bold'
@@ -515,21 +515,21 @@ class FactsheetPDFView(FolderView):
         styles['Heading2'].spaceAfter = 8
         styles['Heading2'].spaceAfter = 2
         styles['Heading2'].textColor = header_rgb
-        
+
         styles['Heading3'].allowWidows = 0
         styles['Heading3'].fontName = 'Helvetica-Bold'
         styles['Heading3'].fontSize = 12
         styles['Heading3'].leading = 14
         styles['Heading3'].spaceAfter = 4
         styles['Heading3'].textColor = header_rgb
-                
+
         styles['Heading4'].allowWidows = 0
         styles['Heading4'].fontName = 'Helvetica-Bold'
         styles['Heading4'].fontSize = 10
         styles['Heading4'].leading = 12
         styles['Heading4'].spaceAfter = 6
         styles['Heading4'].textColor = header_rgb
-        
+
         th_cell = ParagraphStyle('TableHeading')
         th_cell.spaceBefore = 3
         th_cell.spaceAfter = 6
@@ -623,10 +623,10 @@ class FactsheetPDFView(FolderView):
 
         # Standard padding for document elements
         element_padding = 6
-        
+
         # Document image setttings
         max_image_width = doc.width/column_count-(3*element_padding)
-        
+
         if column_count <= 1:
             max_image_width = doc.width/2-(3*element_padding)
 
@@ -680,10 +680,10 @@ class FactsheetPDFView(FolderView):
         extension_url_image = self.site.portal_skins.agcommon_images['extension-url.png']
         extension_url_image_width = 0.5*max_image_width
 
-        # Factsheet title 
+        # Factsheet title
         title_lines = 3
         publication_series_height = 0
-                
+
         if publication_series:
             # If series heading, only 2 title lines
             title_lines = 2
@@ -691,7 +691,7 @@ class FactsheetPDFView(FolderView):
             # One line for the series heading
             publication_series_height = styles['SeriesHeading'].spaceBefore + \
                                         styles['SeriesHeading'].spaceAfter + \
-                                        styles['SeriesHeading'].leading 
+                                        styles['SeriesHeading'].leading
 
         title_height = styles['Heading1'].spaceBefore + \
                        styles['Heading1'].spaceAfter + \
@@ -729,7 +729,7 @@ class FactsheetPDFView(FolderView):
 
         #Two Columns For First (title) page
 
-        title_y = doc.bottomMargin + doc.height - title_height        
+        title_y = doc.bottomMargin + doc.height - title_height
 
         title_column_y = doc.bottomMargin+footer_image_height+element_padding
 
@@ -788,7 +788,7 @@ class FactsheetPDFView(FolderView):
 
         # If we're a news item, append the date
         if self.context.portal_type in ['News Item']:
-            pdf.append(Paragraph('Posted: %s' % self.context.getEffectiveDate().strftime('%B %d, %Y'), discreet))            
+            pdf.append(Paragraph('Posted: %s' % self.context.getEffectiveDate().strftime('%B %d, %Y'), discreet))
 
         # Lead Image and caption as first elements. Not doing News Item image.
         (IMAGE_FIELD_NAME, IMAGE_CAPTION_FIELD_NAME) = getImageAndCaptionFieldNames(self.context)
@@ -805,10 +805,10 @@ class FactsheetPDFView(FolderView):
                     pdf.append(getImage(leadImage, caption=leadImage_caption, leadImage=True))
 
                 else:
-                    pdf.append(getImage(leadImage)) 
+                    pdf.append(getImage(leadImage))
 
-                    if leadImage_caption: 
-                        pdf.append(Paragraph(leadImage_caption, discreet)) 
+                    if leadImage_caption:
+                        pdf.append(Paragraph(leadImage_caption, discreet))
 
 
         # portal_transforms will let us convert HTML into plain text
@@ -835,7 +835,7 @@ class FactsheetPDFView(FolderView):
         if '<h2' in text and not '<h3' in text and not '<h4' in text:
 
             bump_headings = True
-        
+
             heading_tags = sorted([x for x in tag_to_style.keys() if x.startswith('h')])
 
             for i in range(0, len(heading_tags) - 1):
@@ -856,7 +856,7 @@ class FactsheetPDFView(FolderView):
                 if isinstance(pdf[i], ImageFigureBase):
 
                     paragraphs = []
-                    
+
                     for j in range(i+1, len(pdf)-1):
                         if isinstance(pdf[j], Paragraph) or isinstance(pdf[j], HRFlowable):
                             paragraphs.append(pdf[j])
@@ -867,7 +867,7 @@ class FactsheetPDFView(FolderView):
                     if paragraphs:
 
                         pdf[i].hAlign="RIGHT"
-                        
+
                         img_paragraph = ImageAndFlowables(pdf[i], paragraphs,imageLeftPadding=element_padding)
 
                         pdf[i] = img_paragraph
@@ -877,16 +877,16 @@ class FactsheetPDFView(FolderView):
 
         # Contributors (as Contact Information) %%%
         contributors_viewlet = getMultiAdapter((self.context, self.request, self), name='agcommon.contributors')
-        
+
         contributors_people = contributors_viewlet.people
-        
+
         if contributors_people:
             # Adding h2 this way so as to take advantage of the underline and the
             # bump_headings parameter
             heading = Tag(BeautifulSoup(), 'h2')
             heading.insert(0, 'Contact Information')
             pdf.extend(getContent(heading, bump_headings=bump_headings))
-            
+
             for person in contributors_viewlet.people:
                 if person.get('url'):
                     person_name = Paragraph("""<b><a color="blue" href="%(url)s">%(name)s</a></b>""" % person, single_line)
@@ -894,13 +894,13 @@ class FactsheetPDFView(FolderView):
                     person_name = Paragraph("""<b>%(name)s</b>""" % person, single_line)
 
                 person_name.keepWithNext = True
-                
+
                 person_title = Paragraph("""%(title)s""" % person, single_line)
                 person_title.keepWithNext = True
-                
+
                 person_email = Paragraph("""<a color="blue" href="mailto:%(email)s">%(email)s</a>""" % person, single_line)
                 person_email.keepWithNext = True
-                                
+
                 person_phone = Paragraph("""%(phone)s""" % person, single_line_cr)
 
                 pdf.append(person_name)
@@ -909,7 +909,7 @@ class FactsheetPDFView(FolderView):
                 pdf.append(person_phone)
 
         # All done with contents, appending line and statement
-        pdf.append(HRFlowable(width='100%', spaceBefore=4, spaceAfter=4))                
+        pdf.append(HRFlowable(width='100%', spaceBefore=4, spaceAfter=4))
 
         # Extension logo
 
@@ -917,7 +917,7 @@ class FactsheetPDFView(FolderView):
 
         # Choose which statement
         aa_statement = """Penn State is an equal opportunity, affirmative action employer, and is committed to providing employment opportunities to all qualified applicants without regard to race, color, religion, age, sex, sexual orientation, gender identity, national origin, disability or protected veteran status."""
-        
+
         statement_text = ("""Penn State College of Agricultural Sciences research and extension programs are funded in part by Pennsylvania counties, the Commonwealth of Pennsylvania, and the U.S. Department of Agriculture.
 
         Where trade names appear, no discrimination is intended, and no endorsement by Penn State Extension is implied.
